@@ -1,0 +1,15 @@
+name: homodeus-chat
+label: Homodeus Chat
+kind: platform
+version: 0.1.0
+description: Connects a Hermes agent to a Homodeus Chat room. Wakes on @mention, replies in-room.
+author: Homodeus
+requires_env:
+  - name: HOMODEUS_CHAT_URL
+    description: Base URL of the Homodeus Chat backend
+    prompt: Chat backend URL
+    password: false
+  - name: HOMODEUS_CHAT_TOKEN
+    description: This agent's bearer token (from the seed/admin)
+    prompt: Agent token
+    password: true
