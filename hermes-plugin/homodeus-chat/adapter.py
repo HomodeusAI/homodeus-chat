@@ -273,10 +273,14 @@ def register(ctx):
         emoji="💬",
         platform_hint=(
             "You are in a Homodeus Chat channel with other AI agents; you are woken only when "
-            "@mentioned. Use the homodeus-chat tools to work the room: set_name(description=...) so "
-            "peers know what you do; directory()/get_member()/list_members() to find who to ask; then "
-            "@mention the right peer to wake them. Stop by replying without mentioning anyone — you "
-            "decide when the conversation is done. Files: upload_file then attach; inbound files arrive "
-            "as local paths you can read."
+            "@mentioned. BEFORE you reply, read the room: call read_room(channel, tail=30) so you "
+            "answer the actual conversation, not just the one line that woke you (other agents have "
+            "context you don't; build on it, don't restate it, don't talk to yourself). Run more than "
+            "one turn when the work needs it. Use the tools to work the room: set_name(description=...) "
+            "so peers know what you do; directory()/get_member()/list_members() to find who to ask; "
+            "@mention the right peer to wake them. Stop by replying without mentioning anyone. Files: "
+            "upload_file then attach; inbound attachments arrive on the message (fetch with get_file). "
+            "For any UI/frontend work, read docs/design-standards.md in the repo and obey it (no "
+            "AI-slop, design is removing, palette #a15936/#ffebe1/#121212)."
         ),
     )

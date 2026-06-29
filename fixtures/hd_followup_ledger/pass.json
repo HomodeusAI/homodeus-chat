@@ -1,0 +1,220 @@
+{
+  "rows": [
+    {
+      "company_specific_trigger": {
+        "fact_ids": [
+          "fact_trigger_001"
+        ],
+        "text": "Acme Brasil announced a shared services rollout for finance operations."
+      },
+      "computed_status": {
+        "evidence_state": "ok",
+        "stale_basis_fact_ids": [
+          "fact_email_reply_001"
+        ],
+        "stale_reason": "not_stale",
+        "stale_state": "fresh"
+      },
+      "contradictions": [],
+      "crm_claims": [
+        {
+          "claim_id": "claim_crm_stage",
+          "confidence": 1.0,
+          "fact_ids": [
+            "fact_stage_001"
+          ],
+          "predicate": "deal_stage",
+          "value": "proposal"
+        },
+        {
+          "claim_id": "claim_crm_active",
+          "confidence": 1.0,
+          "fact_ids": [
+            "fact_active_001"
+          ],
+          "predicate": "deal_active",
+          "value": "true"
+        }
+      ],
+      "dates": {
+        "last_crm_update_at": "2026-06-29T12:00:00-03:00",
+        "last_verified_buyer_reply_at": "2026-06-29T10:00:00-03:00",
+        "last_verified_seller_touch_at": "2026-06-28T15:00:00-03:00",
+        "next_step_due_at": null,
+        "opened_at": "2026-06-10T09:00:00-03:00"
+      },
+      "deal": {
+        "account_name": "Acme Brasil",
+        "active": true,
+        "amount": {
+          "currency": "BRL",
+          "value": 120000
+        },
+        "crm_account_id": "ACC-001",
+        "crm_deal_id": "HD-001",
+        "deal_name": "Finance automation pilot",
+        "fact_ids": [
+          "fact_stage_001",
+          "fact_active_001",
+          "fact_owner_001"
+        ],
+        "owner": {
+          "email": "ana@example.com",
+          "name": "Ana Owner"
+        },
+        "stage": "proposal"
+      },
+      "email_claims": [
+        {
+          "claim_id": "claim_email_reply",
+          "confidence": 1.0,
+          "fact_ids": [
+            "fact_email_reply_001"
+          ],
+          "predicate": "buyer_reply",
+          "value": "asked_for_next_steps"
+        }
+      ],
+      "integrity": {
+        "canonical_row_sha256": "2e37f464345a029bef0a13ca8f5d261b7fcf4e4c2f763c74aa44263ac64061a3"
+      },
+      "producer": {
+        "boundary_function": null,
+        "kind": "fixture",
+        "model": null,
+        "run_id": null
+      },
+      "recommended_next_action": {
+        "action": "DRAFT_FOLLOW_UP",
+        "confidence": 0.8,
+        "due_at": null,
+        "fact_ids": [
+          "fact_email_reply_001",
+          "fact_trigger_001",
+          "fact_bottleneck_001"
+        ],
+        "owner": "ana@example.com",
+        "reasoning": "The buyer asked for next steps after the shared services rollout and the approval bottleneck is procurement review.",
+        "requires_human_approval": true
+      },
+      "revenue_or_process_bottleneck": {
+        "fact_ids": [
+          "fact_bottleneck_001"
+        ],
+        "text": "Approval is blocked by manual reconciliation and procurement owner review."
+      },
+      "row_id": "row_001"
+    }
+  ],
+  "schema_version": 1,
+  "snapshot_at": "2026-06-30T12:00:00-03:00",
+  "sources": [
+    {
+      "captured_at": "2026-06-30T12:00:00-03:00",
+      "facts": [
+        {
+          "confidence": 1.0,
+          "fact_id": "fact_stage_001",
+          "predicate": "deal_stage",
+          "quote": "stage proposal",
+          "valid_at": "2026-06-30T12:00:00-03:00",
+          "value": "proposal"
+        },
+        {
+          "confidence": 1.0,
+          "fact_id": "fact_active_001",
+          "predicate": "deal_active",
+          "quote": "active true",
+          "valid_at": "2026-06-30T12:00:00-03:00",
+          "value": "true"
+        },
+        {
+          "confidence": 1.0,
+          "fact_id": "fact_owner_001",
+          "predicate": "deal_owner",
+          "quote": "owner ana@example.com",
+          "valid_at": "2026-06-30T12:00:00-03:00",
+          "value": "ana@example.com"
+        }
+      ],
+      "payload": "CRM deal HD-001: account Acme Brasil, stage proposal, active true, owner ana@example.com.",
+      "sha256": "a6e022ba0f31b9847a39045b3bebfc0f2d87b5ef52177ba851505b43b032a32a",
+      "source_id": "src_crm_001",
+      "source_kind": "crm_deal"
+    },
+    {
+      "captured_at": "2026-06-30T12:00:00-03:00",
+      "facts": [
+        {
+          "confidence": 1.0,
+          "fact_id": "fact_email_reply_001",
+          "predicate": "buyer_reply",
+          "quote": "buyer asked for next steps",
+          "valid_at": "2026-06-29T10:00:00-03:00",
+          "value": "asked_for_next_steps"
+        }
+      ],
+      "payload": "Email 2026-06-29: buyer asked for next steps after reviewing the automation proposal.",
+      "sha256": "2670934975ec71eafba76397c2cb4598adb2b4878a5abee098e744031268285c",
+      "source_id": "src_email_001",
+      "source_kind": "email"
+    },
+    {
+      "captured_at": "2026-06-30T12:00:00-03:00",
+      "facts": [
+        {
+          "confidence": 1.0,
+          "fact_id": "fact_trigger_001",
+          "predicate": "company_trigger",
+          "quote": "shared services rollout for finance operations",
+          "valid_at": "2026-06-30T12:00:00-03:00",
+          "value": "shared_services_rollout"
+        }
+      ],
+      "payload": "Public note: Acme Brasil announced a new shared services rollout for finance operations.",
+      "sha256": "4032361d6b762874e482dbada22c821b8290ed2516823b13b6743f7a8c8b0b99",
+      "source_id": "src_public_001",
+      "source_kind": "public_note"
+    },
+    {
+      "captured_at": "2026-06-30T12:00:00-03:00",
+      "facts": [
+        {
+          "confidence": 1.0,
+          "fact_id": "fact_bottleneck_001",
+          "predicate": "process_bottleneck",
+          "quote": "blocked by manual reconciliation and procurement owner review",
+          "valid_at": "2026-06-30T12:00:00-03:00",
+          "value": "manual_reconciliation_procurement_review"
+        }
+      ],
+      "payload": "Call note: approval is blocked by manual reconciliation and procurement owner review.",
+      "sha256": "b6376daa5df66e152f757b1cf13c1c4d2024b90baa44e675f79224c5c265a0c4",
+      "source_id": "src_call_001",
+      "source_kind": "call_note"
+    },
+    {
+      "captured_at": "2026-06-30T12:00:00-03:00",
+      "facts": [
+        {
+          "confidence": 1.0,
+          "fact_id": "fact_email_declined_001",
+          "predicate": "deal_status",
+          "quote": "chose another vendor and will not proceed",
+          "valid_at": "2026-06-28T09:00:00-03:00",
+          "value": "declined"
+        }
+      ],
+      "payload": "Email 2026-06-28: buyer wrote that they chose another vendor and will not proceed.",
+      "sha256": "bd465cd21cef11d26cb0bf6deb98e31d5ddf598a7387a5b8c139794689919849",
+      "source_id": "src_email_002",
+      "source_kind": "email"
+    }
+  ],
+  "stale_policy": {
+    "buyer_reply_unanswered_after_calendar_days": 2,
+    "next_step_overdue_after_calendar_days": 1,
+    "seller_touch_no_buyer_reply_after_calendar_days": 7,
+    "timezone": "America/Sao_Paulo"
+  }
+}
