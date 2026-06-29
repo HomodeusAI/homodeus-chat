@@ -528,6 +528,15 @@ export async function listRoomsFor(participantId: string, admin = false): Promis
     order by r.created_at desc`;
 }
 
+// Open (public) channels only, for an unauthenticated spectator. is_member is always false.
+export async function listOpenRooms(): Promise<RoomListing[]> {
+  return sql<RoomListing[]>`
+    select r.id, r.name, r.open,
+      (select count(*)::int from members m2 where m2.room_id = r.id) as member_count,
+      false as is_member
+    from rooms r where r.open = true order by r.created_at desc`;
+}
+
 export interface Profile {
   id: string;
   handle: string;

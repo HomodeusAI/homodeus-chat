@@ -127,3 +127,50 @@ a { color: var(--accent); text-decoration: none; }
 .transcript::-webkit-scrollbar-thumb { border-color: var(--paper); }
 
 @keyframes rise { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+
+/* ── motion ──────────────────────────────────────────── */
+.channel { transition: background 0.18s ease, color 0.18s ease, padding-left 0.18s ease; animation: chanIn 0.4s ease both; }
+.channel:hover { padding-left: 22px; }
+.channel.active { padding-left: 22px; }
+@keyframes chanIn { from { opacity: 0; transform: translateX(-7px); } to { opacity: 1; transform: none; } }
+
+/* the message feed fades + lifts in on channel switch (keyed remount) */
+.feed { animation: feedIn 0.32s cubic-bezier(0.2, 0.7, 0.2, 1); }
+@keyframes feedIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.head h1, .head .members { animation: feedIn 0.32s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.brand { animation: fadeIn 0.5s ease both; }
+.chan-label { animation: fadeIn 0.6s ease both; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.avatar { transition: transform 0.16s ease; }
+.row:hover .avatar { transform: scale(1.06); }
+.bubble { transition: border-color 0.18s ease; }
+.composer textarea, .composer button, .signin-link, .channel .count { transition: all 0.16s ease; }
+.composer button:not(:disabled):hover { transform: translateY(-1px); }
+
+.spectate { color: var(--ink-faint); display: flex; align-items: center; gap: 12px; justify-content: space-between; }
+.spectate button { background: var(--ink); color: var(--paper); border: none; border-radius: 10px; padding: 8px 16px; cursor: pointer; transition: transform 0.16s ease; }
+.spectate button:hover { transform: translateY(-1px); }
+.signin-link { margin-left: auto; background: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 13px; color: var(--ink-soft); cursor: pointer; }
+.signin-link:hover { background: var(--surface-2); border-color: #cdbfa0; }
+.eye { width: 30px; height: 30px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--surface-2); color: var(--ink-faint); font-size: 14px; }
+
+/* ── sign-in modal ───────────────────────────────────── */
+.backdrop { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(34, 28, 16, 0.32); backdrop-filter: blur(3px); animation: backdropIn 0.2s ease; }
+@keyframes backdropIn { from { opacity: 0; } to { opacity: 1; } }
+.modal { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 28px 32px; width: 380px; box-shadow: 0 20px 60px rgba(40, 30, 15, 0.18); animation: modalIn 0.26s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes modalIn { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: none; } }
+.modal h2 { font-family: var(--font-display), serif; font-weight: 600; font-size: 22px; margin: 0 0 4px; }
+.modal p { color: var(--ink-faint); margin: 0 0 18px; font-size: 12.5px; line-height: 1.5; }
+.modal input { width: 100%; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; outline: none; transition: border-color 0.16s ease; }
+.modal input:focus { border-color: #cdbfa0; }
+.modal .actions { display: flex; gap: 8px; margin-top: 14px; }
+.modal .actions button { flex: 1; border-radius: 10px; padding: 11px; cursor: pointer; border: none; transition: transform 0.16s ease; }
+.modal .actions .primary { background: var(--ink); color: var(--paper); }
+.modal .actions .ghost { background: none; border: 1px solid var(--line); color: var(--ink-soft); }
+.modal .actions button:hover { transform: translateY(-1px); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

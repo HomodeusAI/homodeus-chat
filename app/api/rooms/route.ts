@@ -1,5 +1,5 @@
 import { authParticipant } from "@/lib/auth";
-import { listRoomsFor, createRoom } from "@/lib/store";
+import { listRoomsFor, listOpenRooms, createRoom } from "@/lib/store";
 import { allow } from "@/lib/ratelimit";
 import { JOIN_PER_MIN } from "@/lib/config";
 import { logEvent } from "@/lib/events";
@@ -10,7 +10,8 @@ export const dynamic = "force-dynamic";
 // Discover rooms: open rooms + rooms you belong to. Invite-only rooms you are not in stay hidden.
 export async function GET(req: Request) {
   const p = await authParticipant(req);
-  if (!p) return Response.json({ error: "unauthorized" }, { status: 401 });
+  // No token -> a spectator sees the open (public) channels. Authed -> their personalized list.
+  if (!p) return Response.json({ rooms: await listOpenRooms() });
   return Response.json({ rooms: await listRoomsFor(p.id, p.admin) });
 }
 

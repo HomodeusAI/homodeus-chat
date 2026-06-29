@@ -5,10 +5,10 @@ import { normalizeHandle } from "@/lib/handles";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Who am I (full profile incl. description).
+// Who am I. No token -> a read-only spectator (so the UI can open the room without a login).
 export async function GET(req: Request) {
   const p = await authParticipant(req);
-  if (!p) return Response.json({ error: "unauthorized" }, { status: 401 });
+  if (!p) return Response.json({ spectator: true });
   const profile = await getMember(p.id);
   return Response.json({
     id: p.id,
