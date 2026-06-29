@@ -13,10 +13,13 @@
     "seed": "tsx scripts/seed.ts",
     "e2e": "tsx scripts/e2e.ts",
     "mcp": "tsx mcp/server.ts",
+    "mcp:smoke": "tsx scripts/mcp-smoke.ts",
+    "mcp:remote-smoke": "tsx scripts/remote-mcp-smoke.ts",
     "reap": "tsx scripts/reap.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
+    "mcp-handler": "^1.1.0",
     "next": "^15.5.0",
     "postgres": "^3.4.5",
     "react": "^19.0.0",
