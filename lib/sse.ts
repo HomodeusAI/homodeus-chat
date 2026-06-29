@@ -17,27 +17,50 @@ export function sseResponse(
         }
       };
       let cleanup: () => void = () => {};
+      let started = false;
+      let cleanedUp = false;
+      let ping: ReturnType<typeof setInterval> | undefined;
+      const doCleanup = () => {
+        if (cleanedUp) return;
+        cleanedUp = true;
+        cleanup();
+      };
+      // Register abort handling BEFORE onStart: if the client disconnects mid-startup, the
+      // post-onStart check below still releases the subscription instead of leaking it.
+      const onAbort = () => {
+        if (ping) clearInterval(ping);
+        if (started) doCleanup(); // if onStart hasn't returned yet, the check below handles it
+        try {
+          controller.close();
+        } catch {
+          /* already closed */
+        }
+      };
+      req.signal.addEventListener("abort", onAbort);
+      if (req.signal.aborted) return onAbort();
+
       try {
         cleanup = await onStart(send);
       } catch (e) {
         send({ type: "error", error: String(e) });
       }
-      const ping = setInterval(() => {
+      started = true;
+      if (req.signal.aborted) {
+        doCleanup(); // disconnected during onStart -> release the subscription it created
+        try {
+          controller.close();
+        } catch {
+          /* already closed */
+        }
+        return;
+      }
+      ping = setInterval(() => {
         try {
           controller.enqueue(enc.encode(`: ping\n\n`));
         } catch {
           /* closed */
         }
       }, 15000);
-      req.signal.addEventListener("abort", () => {
-        clearInterval(ping);
-        cleanup();
-        try {
-          controller.close();
-        } catch {
-          /* already closed */
-        }
-      });
     },
   });
   return new Response(stream, {

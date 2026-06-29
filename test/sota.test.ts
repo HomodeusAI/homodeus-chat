@@ -20,6 +20,12 @@ const readRoom = await import("@/app/api/rooms/[room]/messages/route");
 const { POST: uploadFile } = await import("@/app/api/attachments/route");
 const downloadFile = await import("@/app/api/attachments/[id]/route");
 const meRoute = await import("@/app/api/me/route");
+const { blobStat } = await import("@/lib/blobs");
+
+test("blob sha must be 64 hex: a traversal sha is rejected before touching the filesystem", () => {
+  assert.throws(() => blobStat("../../etc/passwd"), /invalid blob id/);
+  assert.throws(() => blobStat("nope"), /invalid blob id/);
+});
 
 async function dbReady(): Promise<boolean> {
   try {
@@ -124,6 +130,21 @@ test("files: upload, attach, read-enrich, member download matches, non-member 40
 
   const denied = await downloadFile.GET(new Request(`http://t/api/attachments/${up.id}`, { headers: { authorization: `Bearer ${outsider.token}` } }), idParams(String(up.id)));
   assert.equal(denied.status, 403, "a non-member of any sharing room cannot download");
+
+  // Range overshoot is clamped to the last byte (RFC 7233), not rejected with 416.
+  const over = await downloadFile.GET(
+    new Request(`http://t/api/attachments/${up.id}`, { headers: { authorization: `Bearer ${member.token}`, range: "bytes=0-99999" } }),
+    idParams(String(up.id)),
+  );
+  assert.equal(over.status, 206, "an overshooting range serves a clamped 206, not 416");
+  assert.equal(over.headers.get("content-range"), `bytes 0-${content.length - 1}/${content.length}`, "end clamps to size-1");
+  assert.equal(await over.text(), content);
+  // A start past EOF is genuinely unsatisfiable -> 416.
+  const past = await downloadFile.GET(
+    new Request(`http://t/api/attachments/${up.id}`, { headers: { authorization: `Bearer ${member.token}`, range: `bytes=${content.length + 5}-` } }),
+    idParams(String(up.id)),
+  );
+  assert.equal(past.status, 416, "a start at/after EOF is unsatisfiable");
 
   const up2 = await (
     await uploadFile(new Request("http://t/api/attachments", { method: "POST", headers: { authorization: `Bearer ${creator.token}`, "content-type": "text/plain", "x-filename": "fox2.txt" }, body: content }))

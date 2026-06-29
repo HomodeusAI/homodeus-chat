@@ -8,7 +8,11 @@ import { BLOB_ROOT, MAX_UPLOAD_BYTES } from "./config";
 // The single blob boundary. Default is the filesystem, content-addressed by sha256 (free dedupe,
 // immutable, perfect ETag). Swap to S3/R2 here without a schema change — the Postgres row, not the
 // disk path, is canonical.
-const shard = (sha: string) => join(BLOB_ROOT, sha.slice(0, 2), sha);
+const HEX64 = /^[0-9a-f]{64}$/;
+const shard = (sha: string) => {
+  if (!HEX64.test(sha)) throw new Error("invalid blob id"); // never let a crafted sha escape BLOB_ROOT
+  return join(BLOB_ROOT, sha.slice(0, 2), sha);
+};
 
 export class TooLargeError extends Error {
   constructor() {
@@ -29,9 +33,14 @@ export async function putBlob(body: AsyncIterable<Uint8Array>): Promise<PutResul
   const tmp = join(BLOB_ROOT, "tmp", randomUUID());
   const hash = createHash("sha256");
   const out = createWriteStream(tmp);
+  // Persistent error listener: a stream error outside the backpressure wait (e.g. disk full mid-write)
+  // would otherwise be an unhandled 'error' event that crashes the process.
+  let writeErr: Error | null = null;
+  out.on("error", (e: Error) => { writeErr = e; });
   let size = 0;
   try {
     for await (const chunk of body) {
+      if (writeErr) throw writeErr;
       size += chunk.length;
       if (MAX_UPLOAD_BYTES && size > MAX_UPLOAD_BYTES) throw new TooLargeError();
       hash.update(chunk);
@@ -49,6 +58,7 @@ export async function putBlob(body: AsyncIterable<Uint8Array>): Promise<PutResul
           out.once("error", onError); // a write error during backpressure rejects instead of hanging
         });
     }
+    if (writeErr) throw writeErr;
     await new Promise<void>((res, rej) => out.end((e?: Error | null) => (e ? rej(e) : res())));
     const sha256 = hash.digest("hex");
     try {

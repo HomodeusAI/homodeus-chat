@@ -46,9 +46,9 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
       end = total - 1;
     } else {
       start = m?.[1] ? Number(m[1]) : 0;
-      end = m?.[2] ? Number(m[2]) : total - 1;
+      end = m?.[2] ? Math.min(Number(m[2]), total - 1) : total - 1; // clamp overshoot (RFC 7233)
     }
-    if (!m || start > end || end >= total || start < 0)
+    if (!m || start < 0 || start >= total || start > end)
       return new Response(null, { status: 416, headers: { "content-range": `bytes */${total}` } });
     headers.set("content-range", `bytes ${start}-${end}/${total}`);
     headers.set("content-length", String(end - start + 1));

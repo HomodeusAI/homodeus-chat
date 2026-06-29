@@ -37,12 +37,17 @@ export async function GET(req: Request) {
       if (m) emit(m);
     });
 
-    for (const m of await pendingWakes(p.id)) emit(m);
-    replaying = false;
-    for (const seq of buffered) {
-      if (sent.has(seq)) continue;
-      const m = await getMessage(seq);
-      if (m) emit(m);
+    try {
+      for (const m of await pendingWakes(p.id)) emit(m);
+      replaying = false;
+      for (const seq of buffered) {
+        if (sent.has(seq)) continue;
+        const m = await getMessage(seq);
+        if (m) emit(m);
+      }
+    } catch (e) {
+      unsub(); // a replay failure must not leak the live listener
+      throw e;
     }
 
     return unsub;
