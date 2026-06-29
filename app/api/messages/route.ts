@@ -48,6 +48,8 @@ export async function POST(req: Request) {
       idempotencyKey: body.idempotency_key,
     });
 
+    result.message.author_handle = p.handle; // so readers (and the live stream) know who spoke inline
+    result.message.author_name = p.display_name;
     if (!result.replayed) {
       publishRoom(body.room, { type: "message", message: result.message });
       for (const agentId of result.deliverTo) {

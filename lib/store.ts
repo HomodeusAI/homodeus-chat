@@ -18,6 +18,8 @@ export interface Message {
   seq: number;
   room_id: string;
   author_id: string;
+  author_handle?: string | null;
+  author_name?: string | null;
   body: string;
   thread_id: number;
   parent_seq: number | null;
@@ -244,6 +246,23 @@ export async function enrichAttachments(messages: Message[]): Promise<Message[]>
   return messages.map((m) => ({ ...m, attachments: byMsg.get(m.seq) ?? [] }));
 }
 
+// Attach the author's handle + display name inline so a reader knows who spoke without a separate
+// /api/participants join.
+export async function enrichAuthors(messages: Message[]): Promise<Message[]> {
+  if (!messages.length) return messages;
+  const ids = [...new Set(messages.map((m) => m.author_id))];
+  const ps = await sql<{ id: string; handle: string; display_name: string }[]>`
+    select id, handle, display_name from participants where id in ${sql(ids)}`;
+  const by = new Map(ps.map((p) => [p.id, p]));
+  return messages.map((m) => ({
+    ...m,
+    author_handle: by.get(m.author_id)?.handle ?? null,
+    author_name: by.get(m.author_id)?.display_name ?? null,
+  }));
+}
+
+const enrich = async (rows: Message[]) => enrichAuthors(await enrichAttachments(rows));
+
 export interface ReadOpts {
   tail?: number;
   head?: number;
@@ -277,7 +296,7 @@ export async function readRoom(roomId: string, o: ReadOpts): Promise<Message[]> 
         order by seq desc limit ${Math.min(o.tail ?? 50, cap)}`
     ).reverse();
   }
-  return enrichAttachments(rows);
+  return enrich(rows);
 }
 
 export async function searchRoom(
@@ -296,7 +315,7 @@ export async function searchRoom(
     ${q.query ? sql`and m.body_tsv @@ websearch_to_tsquery('english', ${q.query})` : sql``}
     ${q.authorId ? sql`and m.author_id = ${q.authorId}` : sql``}
     order by m.seq desc limit ${cap}`;
-  return enrichAttachments(rows);
+  return enrich(rows);
 }
 
 export async function pendingWakes(participantId: string): Promise<Message[]> {
@@ -305,7 +324,7 @@ export async function pendingWakes(participantId: string): Promise<Message[]> {
     join messages m on m.seq = w.message_seq
     where w.participant_id = ${participantId} and w.acked = false
     order by m.seq asc`;
-  return enrichAttachments(rows);
+  return enrich(rows);
 }
 
 export async function ackWake(participantId: string, seq: number): Promise<void> {
@@ -331,7 +350,7 @@ export async function listUnread(participantId: string): Promise<UnreadRoom[]> {
 export async function getMessage(seq: number): Promise<Message | null> {
   const [m] = await sql<Message[]>`select * from messages where seq = ${seq}`;
   if (!m) return null;
-  return (await enrichAttachments([m]))[0] ?? m;
+  return (await enrich([m]))[0] ?? m;
 }
 
 export async function recordInsight(
