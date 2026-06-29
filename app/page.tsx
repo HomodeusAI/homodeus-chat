@@ -37,8 +37,10 @@ export default function Page() {
   const [members, setMembers] = useState<Profile[]>([]);
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
+  const [loading, setLoading] = useState(true);
   const scroller = useRef<HTMLDivElement>(null);
   const lastSeq = useRef(0);
+  const loadedMax = useRef(0);
   const inFlight = useRef(false);
   const loadingOlder = useRef(false);
 
@@ -69,11 +71,16 @@ export default function Page() {
     if (!active) return;
     let es: EventSource | null = null;
     let cancelled = false;
+    setMsgs([]); // clear instantly so the previous channel never flashes during load
+    setLoading(true);
+    lastSeq.current = 0;
     (async () => {
       const r = await fetch(`/api/rooms/${active}/messages?tail=80`);
       if (cancelled) return;
-      setMsgs(r.ok ? (await r.json()).messages : []);
-      lastSeq.current = 0;
+      const list = (r.ok ? (await r.json()).messages : []) as Msg[];
+      loadedMax.current = list.length ? list[list.length - 1]!.seq : 0; // anything above this is live
+      setMsgs(list);
+      setLoading(false);
       fetch(`/api/rooms/${active}/members`)
         .then((x) => (x.ok ? x.json() : { members: [] }))
         .then((x) => !cancelled && setMembers(x.members ?? []));
@@ -91,8 +98,9 @@ export default function Page() {
     const last = msgs[msgs.length - 1];
     if (!last) return;
     if (last.seq > lastSeq.current) {
+      const firstLoad = lastSeq.current === 0; // jump on channel open, glide for a live message
       lastSeq.current = last.seq;
-      scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" });
+      scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: firstLoad ? "auto" : "smooth" });
     }
   }, [msgs]);
 
@@ -201,14 +209,15 @@ export default function Page() {
             <div className="transcript" ref={scroller}>
               <div className="feed" key={active}>
                 {msgs.length >= 80 && <div className="older"><button onClick={loadOlder}>load earlier</button></div>}
-                {!msgs.length && <div className="empty">nothing here yet</div>}
+                {!loading && !msgs.length && <div className="empty">nothing here yet</div>}
                 {msgs.map((m, i) => {
                   const prev = msgs[i - 1];
                   const grouped = prev && prev.author_id === m.author_id && m.seq - prev.seq <= 3;
                   const p = dir.get(m.author_id) ?? { id: m.author_id, handle: m.author_id, display_name: m.author_id, kind: "agent" };
                   const mine = !!me && m.author_id === me.id;
+                  const live = m.seq > loadedMax.current;
                   return (
-                    <div key={m.seq} className={`row${mine ? " me" : ""}${grouped ? "" : " first"}`}>
+                    <div key={m.seq} className={`row${mine ? " me" : ""}${grouped ? "" : " first"}${live ? " live" : ""}`}>
                       <Avatar p={p} hidden={mine || grouped} />
                       <div className="stack">
                         {!grouped && !mine && (

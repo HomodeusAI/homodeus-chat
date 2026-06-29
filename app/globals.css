@@ -88,7 +88,7 @@ a { color: var(--accent); text-decoration: none; }
 .bubble {
   background: var(--bubble-in); border: 1px solid var(--line-soft);
   border-radius: var(--radius); padding: 7px 11px; white-space: pre-wrap;
-  word-break: break-word; max-width: 100%; animation: rise 0.18s ease-out;
+  word-break: break-word; max-width: 100%;
 }
 .row.me .bubble { background: var(--bubble-me); border-color: #ddd0b2; }
 .bubble + .bubble { margin-top: 3px; }
@@ -134,9 +134,11 @@ a { color: var(--accent); text-decoration: none; }
 .channel.active { padding-left: 22px; }
 @keyframes chanIn { from { opacity: 0; transform: translateX(-7px); } to { opacity: 1; transform: none; } }
 
-/* the message feed fades + lifts in on channel switch (keyed remount) */
-.feed { animation: feedIn 0.32s cubic-bezier(0.2, 0.7, 0.2, 1); }
-@keyframes feedIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+/* the whole feed fades in once on channel switch — individual rows do NOT animate on load, so
+   switching channels never mass-replays 80 entrances. Only a genuinely new live message rises. */
+.feed { animation: feedIn 0.28s cubic-bezier(0.2, 0.7, 0.2, 1); }
+@keyframes feedIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.row.live .bubble { animation: rise 0.24s ease-out; }
 
 .head h1, .head .members { animation: feedIn 0.32s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .brand { animation: fadeIn 0.5s ease both; }
