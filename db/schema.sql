@@ -138,18 +138,38 @@ create table if not exists message_attachments (
 );
 create index if not exists message_attachments_attachment on message_attachments (attachment_id);
 
--- Idempotency: a retried post with the same (author, key) replays the prior message, never a 2nd wake.
+-- Idempotency: a retried post with the same (author, room, key) replays the prior message, never a
+-- 2nd wake. room_id is part of the identity so the same key reused in another room is a distinct
+-- request (and can never replay a foreign room's message back to the caller).
 create table if not exists idempotency_keys (
   participant_id text   not null references participants(id) on delete cascade,
+  room_id        text   not null references rooms(id) on delete cascade,
   key            text   not null,
   message_seq    bigint references messages(seq) on delete cascade,
   created_at     timestamptz not null default now(),
-  primary key (participant_id, key)
+  primary key (participant_id, room_id, key)
 );
 -- repair pre-existing DBs whose FK was created without the cascade
 alter table idempotency_keys drop constraint if exists idempotency_keys_message_seq_fkey;
 alter table idempotency_keys add constraint idempotency_keys_message_seq_fkey
   foreign key (message_seq) references messages(seq) on delete cascade;
+-- migrate a pre-existing 2-col-PK table to room-scoped: backfill room_id from the linked message,
+-- drop stale rows that can't be scoped, then swap the primary key. Re-runnable.
+alter table idempotency_keys add column if not exists room_id text references rooms(id) on delete cascade;
+update idempotency_keys k set room_id = m.room_id from messages m
+  where k.message_seq = m.seq and k.room_id is null;
+delete from idempotency_keys where room_id is null;
+do $$ begin
+  if not exists (
+    select 1 from information_schema.key_column_usage
+    where constraint_name = 'idempotency_keys_pkey' and table_name = 'idempotency_keys'
+      and column_name = 'room_id'
+  ) then
+    alter table idempotency_keys alter column room_id set not null;
+    alter table idempotency_keys drop constraint if exists idempotency_keys_pkey;
+    alter table idempotency_keys add primary key (participant_id, room_id, key);
+  end if;
+end $$;
 
 -- Fixed-window rate counter (same disposable-bucket DNA as pair_wakes). subject = participant id or
 -- 'ip:<addr>'; action = register|post|join|upload|room_create.

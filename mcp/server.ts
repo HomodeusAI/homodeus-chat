@@ -5,6 +5,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { createReadStream, createWriteStream } from "node:fs";
+import { pipeline } from "node:stream/promises";
 import { basename } from "node:path";
 import { participantForToken } from "../lib/auth";
 import {
@@ -43,6 +44,9 @@ if (!me) {
 
 const text = (data: unknown) => ({ content: [{ type: "text" as const, text: JSON.stringify(data) }] });
 const fail = (msg: string) => ({ content: [{ type: "text" as const, text: msg }], isError: true });
+// Read/observe authz mirrors the HTTP guard: an admin (god-view) reads any room; everyone else must
+// be a member.
+const canRead = async (room: string) => me.admin || (await isMember(room, me.id));
 
 const server = new McpServer({ name: "homodeus-chat", version: "0.1.0" });
 
@@ -61,6 +65,8 @@ server.registerTool(
     },
   },
   async ({ room, body, parent_seq, attachment_ids, idempotency_key }) => {
+    if (!body.trim() && !attachment_ids?.length)
+      return fail("a non-empty body or at least one attachment is required");
     try {
       const r = await postMessage({
         authorId: me.id,
@@ -85,7 +91,7 @@ server.registerTool(
     inputSchema: { room: z.string(), tail: z.number().optional(), head: z.number().optional(), since: z.number().optional() },
   },
   async ({ room, tail, head, since }) => {
-    if (!(await isMember(room, me.id))) return fail(`forbidden: not a member of ${room}`);
+    if (!(await canRead(room))) return fail(`forbidden: not a member of ${room}`);
     return text(await readRoom(room, { tail, head, since }));
   },
 );
@@ -97,7 +103,7 @@ server.registerTool(
     inputSchema: { room: z.string(), q: z.string().optional(), author: z.string().optional(), mentions: z.string().optional() },
   },
   async ({ room, q, author, mentions }) => {
-    if (!(await isMember(room, me.id))) return fail(`forbidden: not a member of ${room}`);
+    if (!(await canRead(room))) return fail(`forbidden: not a member of ${room}`);
     return text(await searchRoom(room, { query: q, authorId: author, mentions }));
   },
 );
@@ -183,8 +189,10 @@ server.registerTool(
   async ({ room }) => {
     const r = await getRoom(room);
     if (!r) return fail("no such channel");
-    const members = me.admin || (await isMember(room, me.id)) ? await roomMembers(room) : [];
-    return text({ ...r, members });
+    // Invite-only rooms stay hidden (same as list_rooms): only a member or admin sees them at all.
+    const visible = r.open || me.admin || (await isMember(room, me.id));
+    if (!visible) return fail("no such channel");
+    return text({ ...r, members: await roomMembers(room) });
   },
 );
 
@@ -253,12 +261,12 @@ server.registerTool(
     if (!(await attachmentDownloadableBy(id, me.id))) return fail("forbidden");
     const meta = await attachmentMeta(id);
     if (!meta) return fail("not found");
-    await new Promise<void>((res, rej) =>
-      blobStream(meta.sha256)
-        .pipe(createWriteStream(save_path))
-        .on("finish", () => res())
-        .on("error", rej),
-    );
+    try {
+      // pipeline propagates errors from BOTH ends (a missing/corrupt blob), so this never hangs.
+      await pipeline(blobStream(meta.sha256), createWriteStream(save_path));
+    } catch (e) {
+      return fail(`download failed: ${String(e)}`);
+    }
     return text({ saved: save_path, filename: meta.filename, size: meta.size, content_type: meta.content_type });
   },
 );

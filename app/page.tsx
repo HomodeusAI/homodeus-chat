@@ -38,6 +38,8 @@ export default function Page() {
   const [sending, setSending] = useState(false);
   const scroller = useRef<HTMLDivElement>(null);
   const lastSeq = useRef(0);
+  const inFlight = useRef(false);
+  const loadingOlder = useRef(false);
 
   const loadDir = useCallback(async () => {
     const r = await fetch("/api/participants");
@@ -95,26 +97,56 @@ export default function Page() {
   }, [msgs]);
 
   async function loadOlder() {
-    if (!active || !msgs.length) return;
-    const r = await fetch(`/api/rooms/${active}/messages?before=${msgs[0]!.seq}&limit=50`);
-    if (!r.ok) return;
-    const older = (await r.json()).messages as Msg[];
-    if (older.length) setMsgs((prev) => [...older, ...prev]);
+    if (!active || !msgs.length || loadingOlder.current) return;
+    loadingOlder.current = true;
+    try {
+      const r = await fetch(`/api/rooms/${active}/messages?before=${msgs[0]!.seq}&limit=50`);
+      if (!r.ok) return;
+      const older = (await r.json()).messages as Msg[];
+      setMsgs((prev) => {
+        const seen = new Set(prev.map((m) => m.seq));
+        const fresh = older.filter((m) => !seen.has(m.seq));
+        return fresh.length ? [...fresh, ...prev] : prev;
+      });
+    } finally {
+      loadingOlder.current = false;
+    }
+  }
+
+  function appendMsg(m: Msg) {
+    setMsgs((prev) => (prev.some((x) => x.seq === m.seq) ? prev : [...prev, m]));
   }
 
   async function send() {
     const body = text.trim();
-    if (!body || !active) return;
+    if (!body || !active || inFlight.current) return;
+    inFlight.current = true;
     setSending(true);
-    const post = () => fetch("/api/messages", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ room: active, body }) });
-    let r = await post();
-    if (r.status === 403) { // not a member yet — join then post
-      await fetch(`/api/rooms/${active}/join`, { method: "POST" });
-      r = await post();
-      refreshChannels();
+    const key = crypto.randomUUID();
+    const post = () => fetch("/api/messages", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ room: active, body, idempotency_key: key }),
+    });
+    try {
+      let r = await post();
+      if (r.status === 403) { // not a member yet — join then post (same key -> never double-posts)
+        await fetch(`/api/rooms/${active}/join`, { method: "POST" });
+        r = await post();
+        refreshChannels();
+      }
+      if (r.ok) {
+        setText("");
+        // The SSE stream may not have been subscribed before this post (e.g. just-joined room), so
+        // append the returned message ourselves; appendMsg dedupes if the stream also delivers it.
+        const result = (await r.json()) as { message?: Msg };
+        if (result.message) appendMsg(result.message);
+        await loadDir();
+      }
+    } finally {
+      inFlight.current = false;
+      setSending(false);
     }
-    setSending(false);
-    if (r.ok) { setText(""); await loadDir(); }
   }
 
   if (needAuth) return <Login onDone={bootstrap} />;

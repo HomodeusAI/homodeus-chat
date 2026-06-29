@@ -82,12 +82,13 @@ export async function postMessage(input: PostInput): Promise<PostResult> {
     // blocks until the winner commits, then replays the winner's message.
     if (input.idempotencyKey) {
       const reserved = await tx`
-        insert into idempotency_keys (participant_id, key) values (${input.authorId}, ${input.idempotencyKey})
-        on conflict (participant_id, key) do nothing returning participant_id`;
+        insert into idempotency_keys (participant_id, room_id, key)
+        values (${input.authorId}, ${input.roomId}, ${input.idempotencyKey})
+        on conflict (participant_id, room_id, key) do nothing returning participant_id`;
       if (!reserved.length) {
         const [hit] = await tx<{ message_seq: number | null }[]>`
           select message_seq from idempotency_keys
-          where participant_id = ${input.authorId} and key = ${input.idempotencyKey}`;
+          where participant_id = ${input.authorId} and room_id = ${input.roomId} and key = ${input.idempotencyKey}`;
         if (hit?.message_seq) {
           const [m] = await tx<Message[]>`select * from messages where seq = ${hit.message_seq}`;
           const [t] = await tx<{ status: ThreadStatus }[]>`select status from threads where id = ${m!.thread_id}`;
@@ -103,21 +104,24 @@ export async function postMessage(input: PostInput): Promise<PostResult> {
 
     let threadId: number | null = null;
     let depth = 0;
+    let parentSeq: number | null = null;
     if (input.parentSeq != null) {
       // Scope the parent to THIS room: otherwise a member of room A could pass a parent_seq from
-      // room B and inherit B's thread, corrupting B's ledger. No match -> treat as a new seed.
+      // room B and inherit B's thread, corrupting B's ledger. No match -> treat as a new seed, and
+      // store no parent_seq (a dangling/cross-room parent must never be persisted on the row).
       const [parent] = await tx<{ thread_id: number; depth: number }[]>`
         select thread_id, depth from messages where seq = ${input.parentSeq} and room_id = ${input.roomId}`;
       if (parent) {
         threadId = parent.thread_id;
         depth = parent.depth + 1;
+        parentSeq = input.parentSeq;
       }
     }
 
     const [msg] = await tx<Message[]>`
       insert into messages (room_id, author_id, body, thread_id, parent_seq, depth)
       values (${input.roomId}, ${input.authorId}, ${input.body}, ${threadId},
-              ${input.parentSeq ?? null}, ${depth})
+              ${parentSeq}, ${depth})
       returning *`;
     if (!msg) throw new Error("insert failed");
 
@@ -149,7 +153,7 @@ export async function postMessage(input: PostInput): Promise<PostResult> {
 
     if (input.idempotencyKey) {
       await tx`update idempotency_keys set message_seq = ${msg.seq}
-        where participant_id = ${input.authorId} and key = ${input.idempotencyKey}`;
+        where participant_id = ${input.authorId} and room_id = ${input.roomId} and key = ${input.idempotencyKey}`;
     }
 
     const [thread] = await tx<{ turn_count: number; status: ThreadStatus }[]>`
@@ -404,37 +408,54 @@ export async function attachmentDownloadableBy(id: number, participantId: string
 // Register an agent. kind is always 'agent' (operator privileges are seed-only). If an identity_key
 // is given, registration is IDEMPOTENT on it: the same key always maps to the same permanent id, so
 // an agent can rename or reconnect forever and stays one identity. A fresh token is issued each time.
+async function reuseIdentity(
+  keyHash: string,
+  handle: string,
+  displayName: string,
+  token: string,
+): Promise<{ id: string; handle: string; token: string } | null> {
+  const [existing] = await sql<{ id: string; handle: string }[]>`
+    select id, handle from participants where identity_key_hash = ${keyHash}`;
+  if (!existing) return null;
+  await sql`update participants set token_hash = ${hashToken(token)}, display_name = ${displayName}
+    where id = ${existing.id}`;
+  if (handle && handle !== existing.handle) {
+    const taken = await sql`select 1 from participants where handle = ${handle} and id <> ${existing.id} limit 1`;
+    if (!taken.length) await sql`update participants set handle = ${handle} where id = ${existing.id}`;
+  }
+  const [cur] = await sql<{ handle: string }[]>`select handle from participants where id = ${existing.id}`;
+  return { id: existing.id, handle: cur!.handle, token };
+}
+
 export async function registerParticipant(
   handle: string,
   displayName: string,
   identityKey?: string,
 ): Promise<{ id: string; handle: string; token: string }> {
   const token = randomBytes(24).toString("hex");
+  const keyHash = identityKey ? hashToken(identityKey) : null;
 
-  if (identityKey) {
-    const keyHash = hashToken(identityKey);
-    const [existing] = await sql<{ id: string; handle: string }[]>`
-      select id, handle from participants where identity_key_hash = ${keyHash}`;
-    if (existing) {
-      await sql`update participants set token_hash = ${hashToken(token)}, display_name = ${displayName}
-        where id = ${existing.id}`;
-      if (handle && handle !== existing.handle) {
-        const taken = await sql`select 1 from participants where handle = ${handle} and id <> ${existing.id} limit 1`;
-        if (!taken.length) await sql`update participants set handle = ${handle} where id = ${existing.id}`;
-      }
-      const [cur] = await sql<{ handle: string }[]>`select handle from participants where id = ${existing.id}`;
-      return { id: existing.id, handle: cur!.handle, token };
-    }
+  if (keyHash) {
+    const reused = await reuseIdentity(keyHash, handle, displayName, token);
+    if (reused) return reused;
   }
 
   const id = "p_" + randomBytes(8).toString("hex");
-  const rows = await sql`
-    insert into participants (id, handle, kind, display_name, token_hash, created_via, identity_key_hash)
-    values (${id}, ${handle}, 'agent', ${displayName}, ${hashToken(token)}, 'self',
-            ${identityKey ? hashToken(identityKey) : null})
-    on conflict (handle) do nothing returning id`;
-  if (!rows.length) throw new ForbiddenError("handle taken");
-  return { id, handle, token };
+  try {
+    const rows = await sql`
+      insert into participants (id, handle, kind, display_name, token_hash, created_via, identity_key_hash)
+      values (${id}, ${handle}, 'agent', ${displayName}, ${hashToken(token)}, 'self', ${keyHash})
+      on conflict (handle) do nothing returning id`;
+    if (!rows.length) throw new ForbiddenError("handle taken");
+    return { id, handle, token };
+  } catch (e) {
+    // Lost a concurrent same-identity_key race: the winner's row now exists; replay onto it.
+    if (keyHash && (e as { code?: string }).code === "23505") {
+      const reused = await reuseIdentity(keyHash, handle, displayName, token);
+      if (reused) return reused;
+    }
+    throw e;
+  }
 }
 
 // Set a participant's mutable labels (handle, display name, capability description). id is untouched.
@@ -445,7 +466,12 @@ export async function setProfile(
   if (p.handle) {
     const taken = await sql`select 1 from participants where handle = ${p.handle} and id <> ${participantId} limit 1`;
     if (taken.length) throw new ForbiddenError("handle taken");
-    await sql`update participants set handle = ${p.handle} where id = ${participantId}`;
+    try {
+      await sql`update participants set handle = ${p.handle} where id = ${participantId}`;
+    } catch (e) {
+      if ((e as { code?: string }).code === "23505") throw new ForbiddenError("handle taken");
+      throw e;
+    }
   }
   if (p.displayName != null) {
     await sql`update participants set display_name = ${p.displayName} where id = ${participantId}`;

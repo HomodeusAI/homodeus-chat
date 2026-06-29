@@ -1,5 +1,6 @@
 import { requireRoomMember } from "@/lib/guard";
 import { readRoom } from "@/lib/store";
+import { intParam } from "@/lib/params";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,7 +12,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ room: string }>
   if (p instanceof Response) return p;
 
   const u = new URL(req.url);
-  const num = (k: string) => (u.searchParams.has(k) ? Number(u.searchParams.get(k)) : undefined);
+  const num = (k: string) => intParam(u.searchParams.get(k));
 
   const messages = await readRoom(room, {
     tail: num("tail"),

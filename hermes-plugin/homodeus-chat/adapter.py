@@ -56,13 +56,18 @@ class HomodeusChatAdapter(BasePlatformAdapter):
             logger.error("homodeus-chat: HOMODEUS_CHAT_URL missing")
             return False
         self._client = httpx.AsyncClient(timeout=httpx.Timeout(None))
-        self._media_dir = tempfile.mkdtemp(prefix="homodeus_chat_")
-        if not self.token and self.identity_key:
-            self.token = await self._self_register()
-        if not self.token:
-            logger.error("homodeus-chat: set HOMODEUS_CHAT_TOKEN or HOMODEUS_CHAT_IDENTITY_KEY")
+        try:
+            if not self.token and self.identity_key:
+                self.token = await self._self_register()
+            if not self.token:
+                logger.error("homodeus-chat: set HOMODEUS_CHAT_TOKEN or HOMODEUS_CHAT_IDENTITY_KEY")
+                await self._client.aclose()
+                return False
+        except Exception as e:
+            logger.error("homodeus-chat: registration failed: %s", e)
             await self._client.aclose()
             return False
+        self._media_dir = tempfile.mkdtemp(prefix="homodeus_chat_")  # only after creds are valid
         await self._join_channels()
         self._running = True
         self._task = asyncio.create_task(self._listen())
@@ -83,10 +88,13 @@ class HomodeusChatAdapter(BasePlatformAdapter):
     async def _join_channels(self) -> None:
         for ch in self.channels:
             try:
-                await self._client.post(f"{self.url}/api/rooms/{ch}/join", headers=self._headers())
-                logger.info("homodeus-chat: joined channel %s", ch)
+                r = await self._client.post(f"{self.url}/api/rooms/{ch}/join", headers=self._headers())
+                if r.status_code < 300:
+                    logger.info("homodeus-chat: joined channel %s", ch)
+                else:
+                    logger.warning("homodeus-chat: join %s failed: HTTP %s", ch, r.status_code)
             except Exception as e:
-                logger.warning("homodeus-chat: join %s failed: %s", ch, e)
+                logger.warning("homodeus-chat: join %s error: %s", ch, e)
 
     async def disconnect(self) -> None:
         self._running = False
@@ -120,6 +128,19 @@ class HomodeusChatAdapter(BasePlatformAdapter):
                             await self._on_wake(payload["message"])
             except asyncio.CancelledError:
                 raise
+            except httpx.HTTPStatusError as e:  # auth died -> re-register from the identity key, else stop
+                if e.response.status_code in (401, 403) and self.identity_key:
+                    logger.warning("homodeus-chat: stream auth failed (%s); re-registering", e.response.status_code)
+                    try:
+                        self.token = await self._self_register()
+                    except Exception as re:
+                        logger.error("homodeus-chat: re-register failed: %s", re)
+                        await asyncio.sleep(backoff)
+                        backoff = min(backoff * 2, 30)
+                    continue
+                logger.warning("homodeus-chat: stream rejected: HTTP %s", e.response.status_code)
+                await asyncio.sleep(backoff)
+                backoff = min(backoff * 2, 30)
             except Exception as e:  # network/stream drop -> reconnect; server replays unacked wakes
                 logger.warning("homodeus-chat: stream error: %s", e)
                 await asyncio.sleep(backoff)
@@ -226,7 +247,9 @@ def register(ctx):
         label="Homodeus Chat",
         adapter_factory=lambda cfg: HomodeusChatAdapter(cfg),
         check_fn=check_requirements,
-        required_env=["HOMODEUS_CHAT_URL", "HOMODEUS_CHAT_TOKEN"],
+        # Only the URL is hard-required; connect() accepts either HOMODEUS_CHAT_TOKEN or
+        # HOMODEUS_CHAT_IDENTITY_KEY (self-register) and fails with a precise error if neither is set.
+        required_env=["HOMODEUS_CHAT_URL"],
         install_hint="pip install httpx",
         # The chat backend already enforces room membership, so the Hermes-side user allowlist is
         # redundant. Set HOMODEUS_CHAT_ALLOW_ALL=true to accept any room participant as an author

@@ -1,5 +1,6 @@
 import { requireRoomMember } from "@/lib/guard";
 import { searchRoom } from "@/lib/store";
+import { intParam } from "@/lib/params";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,7 +16,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ room: string }>
     query: u.searchParams.get("q") ?? undefined,
     authorId: u.searchParams.get("author") ?? undefined,
     mentions: u.searchParams.get("mentions") ?? undefined,
-    limit: u.searchParams.has("limit") ? Number(u.searchParams.get("limit")) : undefined,
+    limit: intParam(u.searchParams.get("limit")),
   });
   return Response.json({ messages });
 }

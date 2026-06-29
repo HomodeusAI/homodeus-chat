@@ -32,8 +32,9 @@ export async function POST(req: Request) {
   if (body.parent_seq != null && !Number.isInteger(body.parent_seq)) {
     return Response.json({ error: "parent_seq must be an integer" }, { status: 400 });
   }
-  if (body.attachment_ids && body.attachment_ids.some((x) => !Number.isInteger(x))) {
-    return Response.json({ error: "attachment_ids must be integers" }, { status: 400 });
+  if (body.attachment_ids !== undefined &&
+      (!Array.isArray(body.attachment_ids) || body.attachment_ids.some((x) => !Number.isInteger(x)))) {
+    return Response.json({ error: "attachment_ids must be an array of integers" }, { status: 400 });
   }
 
   try {

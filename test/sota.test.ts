@@ -198,6 +198,39 @@ test("post rejects non-integer parent_seq / attachment_ids", { skip: !hasDb }, a
   assert.equal((await postMessage(jsonReq("/api/messages", creator.token, { room: room.id, body: "x", attachment_ids: ["a"] }))).status, 400);
 });
 
+test("post rejects a non-array attachment_ids with 400 (never a 500 crash)", { skip: !hasDb }, async () => {
+  const room = await (await rooms.POST(jsonReq("/api/rooms", creator.token, { name: "Open", open: true }))).json();
+  const r = await postMessage(jsonReq("/api/messages", creator.token, { room: room.id, body: "x", attachment_ids: "boom" }));
+  assert.equal(r.status, 400, "a truthy non-array must be rejected, not crash on .some()");
+});
+
+test("read with garbage numeric params returns 200, not a 500", { skip: !hasDb }, async () => {
+  const room = await (await rooms.POST(jsonReq("/api/rooms", creator.token, { name: "Open", open: true }))).json();
+  const r = await readRoom.GET(new Request(`http://t/api/rooms/${room.id}/messages?tail=abc&before=NaN&limit=-5`, { headers: { authorization: `Bearer ${creator.token}` } }), params(room.id));
+  assert.equal(r.status, 200, "invalid params are ignored, never passed to SQL as limit NaN");
+});
+
+test("idempotency key is room-scoped: the same key in another room is a distinct post", { skip: !hasDb }, async () => {
+  const a = await (await rooms.POST(jsonReq("/api/rooms", creator.token, { name: "Open", open: true }))).json();
+  const b = await (await rooms.POST(jsonReq("/api/rooms", creator.token, { name: "Open", open: true }))).json();
+  const key = "k-" + tag;
+  const r1 = await (await postMessage(jsonReq("/api/messages", creator.token, { room: a.id, body: "in A", idempotency_key: key }))).json();
+  const r2 = await (await postMessage(jsonReq("/api/messages", creator.token, { room: b.id, body: "in B", idempotency_key: key }))).json();
+  assert.notEqual(r2.message.seq, r1.message.seq, "reusing the key in room B must NOT replay room A's message");
+  assert.equal(r2.message.room_id, b.id, "the B post lands in B");
+  assert.equal(r2.replayed ?? false, false);
+});
+
+test("a cross-room parent_seq is not persisted on the row (reseeds, stores null parent)", { skip: !hasDb }, async () => {
+  const a = await (await rooms.POST(jsonReq("/api/rooms", creator.token, { name: "Open", open: true }))).json();
+  const b = await (await rooms.POST(jsonReq("/api/rooms", creator.token, { name: "Open", open: true }))).json();
+  const seed = await (await postMessage(jsonReq("/api/messages", creator.token, { room: a.id, body: "seed in A" }))).json();
+  const child = await (await postMessage(jsonReq("/api/messages", creator.token, { room: b.id, body: "child cites A", parent_seq: seed.message.seq }))).json();
+  const [row] = await sql<{ parent_seq: number | null; thread_id: number; seq: number }[]>`select parent_seq, thread_id, seq from messages where seq = ${child.message.seq}`;
+  assert.equal(row!.parent_seq, null, "a parent from another room is dropped, not stored as a dangling pointer");
+  assert.equal(row!.thread_id, row!.seq, "and the message reseeds its own thread");
+});
+
 test("identity_key: the same key always returns the same permanent id (one identity, new token)", { skip: !hasDb }, async () => {
   const key = "idk-" + tag;
   const r1 = await (await register(jsonReq("/api/register", null, { handle: tag + "k", display_name: "K1", identity_key: key }))).json();
