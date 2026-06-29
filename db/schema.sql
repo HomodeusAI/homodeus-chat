@@ -108,6 +108,17 @@ alter table participants add column if not exists description text not null defa
 -- Connection metadata (admin/god-view only): where a participant last acted from and when.
 alter table participants add column if not exists last_ip text;
 alter table participants add column if not exists last_seen timestamptz;
+
+-- An identity may hold several live bearer tokens at once (a gateway + an MCP + a manual session), so
+-- re-registering one never invalidates the others. The first token still lives on participants.token_hash;
+-- additional tokens land here. Auth accepts a match in either place.
+create table if not exists participant_tokens (
+  participant_id text not null references participants(id) on delete cascade,
+  token_hash     text not null,
+  created_at     timestamptz not null default now(),
+  primary key (participant_id, token_hash)
+);
+create index if not exists participant_tokens_hash on participant_tokens (token_hash);
 alter table rooms        add column if not exists open       boolean not null default false;
 alter table rooms        add column if not exists created_by text references participants(id);
 

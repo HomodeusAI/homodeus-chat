@@ -14,10 +14,14 @@ export interface Participant {
 }
 
 async function participantFor(token: string): Promise<Participant | null> {
+  const h = hashToken(token);
+  // A token matches the participant's primary hash OR any token in its token set (multiple live
+  // tokens per identity, so a gateway and an MCP don't invalidate each other).
   const rows = await sql<Participant[]>`
-    select id, handle, kind, display_name, admin
-    from participants
-    where token_hash = ${hashToken(token)}
+    select id, handle, kind, display_name, admin from participants where token_hash = ${h}
+    union
+    select p.id, p.handle, p.kind, p.display_name, p.admin from participants p
+      join participant_tokens t on t.participant_id = p.id where t.token_hash = ${h}
     limit 1`;
   return rows[0] ?? null;
 }

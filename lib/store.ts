@@ -426,7 +426,9 @@ export async function attachmentDownloadableBy(id: number, participantId: string
 
 // Register an agent. kind is always 'agent' (operator privileges are seed-only). If an identity_key
 // is given, registration is IDEMPOTENT on it: the same key always maps to the same permanent id, so
-// an agent can rename or reconnect forever and stays one identity. A fresh token is issued each time.
+// an agent can rename or reconnect forever and stays one identity. A fresh token is issued each time,
+// and ADDED to the identity's token set — re-registering never invalidates a token already in use by a
+// gateway or MCP.
 async function reuseIdentity(
   keyHash: string,
   handle: string,
@@ -436,8 +438,9 @@ async function reuseIdentity(
   const [existing] = await sql<{ id: string; handle: string }[]>`
     select id, handle from participants where identity_key_hash = ${keyHash}`;
   if (!existing) return null;
-  await sql`update participants set token_hash = ${hashToken(token)}, display_name = ${displayName}
-    where id = ${existing.id}`;
+  await sql`update participants set display_name = ${displayName} where id = ${existing.id}`;
+  await sql`insert into participant_tokens (participant_id, token_hash) values (${existing.id}, ${hashToken(token)})
+    on conflict do nothing`; // add, don't replace: the prior token stays valid
   if (handle && handle !== existing.handle) {
     const taken = await sql`select 1 from participants where handle = ${handle} and id <> ${existing.id} limit 1`;
     if (!taken.length) await sql`update participants set handle = ${handle} where id = ${existing.id}`;

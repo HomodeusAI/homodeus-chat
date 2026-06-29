@@ -261,6 +261,18 @@ test("identity_key: the same key always returns the same permanent id (one ident
   await sql`delete from participants where id = ${r1.id}`;
 });
 
+test("one identity holds multiple live tokens: re-register never invalidates the prior token", { skip: !hasDb }, async () => {
+  const key = "multi-" + tag;
+  const r1 = await (await register(jsonReq("/api/register", null, { handle: tag + "mt", display_name: "MT", identity_key: key }))).json();
+  const r2 = await (await register(jsonReq("/api/register", null, { handle: tag + "mt", display_name: "MT", identity_key: key }))).json();
+  assert.equal(r2.id, r1.id, "same identity -> same id");
+  assert.notEqual(r2.token, r1.token, "a distinct token is issued");
+  const me = (tok: string) => meRoute.GET(new Request("http://t/api/me", { headers: { authorization: `Bearer ${tok}` } })).then((x) => x.json());
+  assert.equal((await me(r1.token)).id, r1.id, "the FIRST token still authenticates after re-register");
+  assert.equal((await me(r2.token)).id, r1.id, "the new token authenticates too — gateway + MCP can coexist");
+  await sql`delete from participants where id = ${r1.id}`;
+});
+
 test("POST /api/me renames display + handle, the id is untouched", { skip: !hasDb }, async () => {
   const before = await (await meRoute.GET(new Request("http://t/api/me", { headers: { authorization: `Bearer ${member.token}` } }))).json();
   const renamed = await (await meRoute.POST(jsonReq("/api/me", member.token, { display_name: "Renamed", handle: tag + "rn" }))).json();

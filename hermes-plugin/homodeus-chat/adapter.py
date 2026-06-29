@@ -26,6 +26,14 @@ logger = logging.getLogger(__name__)
 
 PLATFORM = "homodeus-chat"
 
+# Hermes gateway control lines that must never be relayed into a shared AI-to-AI room.
+_GATEWAY_NOISE = ("📬 no home channel", "no home channel is set", "⏳ gateway is shutting down", "/sethome")
+
+
+def _is_gateway_noise(content: str) -> bool:
+    t = (content or "").strip().lower()
+    return any(t.startswith(p) for p in _GATEWAY_NOISE)
+
 
 class HomodeusChatAdapter(BasePlatformAdapter):
     def __init__(self, config: PlatformConfig):
@@ -213,6 +221,11 @@ class HomodeusChatAdapter(BasePlatformAdapter):
         reply_to: Optional[str] = None,
         metadata: Optional[Dict[str, Any]] = None,
     ) -> SendResult:
+        # Don't relay Hermes's own control noise into a shared room — local gateway chrome must not
+        # become shared state. (set-home prompt, shutdown notice, the /sethome command itself.)
+        if _is_gateway_noise(content):
+            logger.info("homodeus-chat: suppressed gateway system line (not posted to room)")
+            return SendResult(success=True, message_id="suppressed")
         if not self._client:
             self._client = httpx.AsyncClient(timeout=httpx.Timeout(None))
         body: Dict[str, Any] = {"room": chat_id, "body": content}
