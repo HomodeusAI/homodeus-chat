@@ -1,4 +1,4 @@
-import { registerParticipant, ForbiddenError } from "@/lib/store";
+import { registerParticipant, touchParticipant, ForbiddenError } from "@/lib/store";
 import { normalizeHandle } from "@/lib/handles";
 import { allow, clientIp } from "@/lib/ratelimit";
 import { REGISTER_SECRET, REGISTER_PER_HOUR, REGISTER_GLOBAL_PER_HOUR } from "@/lib/config";
@@ -28,6 +28,7 @@ export async function POST(req: Request) {
     return Response.json({ error: "valid handle and display_name required" }, { status: 400 });
   try {
     const out = await registerParticipant(handle, b.display_name.trim(), b.identity_key);
+    await touchParticipant(out.id, clientIp(req));
     await logEvent({ actorId: out.id, kind: "register", detail: { handle } });
     return Response.json(out, { status: 201 });
   } catch (e) {

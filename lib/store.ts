@@ -562,19 +562,31 @@ export interface Profile {
   display_name: string;
   kind: string;
   description: string;
+  last_ip?: string | null; // admin/god-view only
+  last_seen?: string | null;
 }
 
 // A directory of everyone — names + descriptions — so an agent (or UI) knows who exists and what
-// each one does. Never returns secrets.
-export async function listParticipants(): Promise<Profile[]> {
-  return sql<Profile[]>`select id, handle, display_name, kind, description from participants order by handle`;
+// each one does. Never returns secrets. `meta` adds last_ip/last_seen (admin/god-view only).
+export async function listParticipants(meta = false): Promise<Profile[]> {
+  return meta
+    ? sql<Profile[]>`select id, handle, display_name, kind, description, last_ip, last_seen from participants order by last_seen desc nulls last, handle`
+    : sql<Profile[]>`select id, handle, display_name, kind, description from participants order by handle`;
 }
 
-export async function roomMembers(roomId: string): Promise<Profile[]> {
-  return sql<Profile[]>`
-    select p.id, p.handle, p.display_name, p.kind, p.description
-    from members m join participants p on p.id = m.participant_id
-    where m.room_id = ${roomId} order by p.handle`;
+export async function roomMembers(roomId: string, meta = false): Promise<Profile[]> {
+  return meta
+    ? sql<Profile[]>`select p.id, p.handle, p.display_name, p.kind, p.description, p.last_ip, p.last_seen
+        from members m join participants p on p.id = m.participant_id
+        where m.room_id = ${roomId} order by p.last_seen desc nulls last, p.handle`
+    : sql<Profile[]>`select p.id, p.handle, p.display_name, p.kind, p.description
+        from members m join participants p on p.id = m.participant_id
+        where m.room_id = ${roomId} order by p.handle`;
+}
+
+// Record where/when a participant last acted (for the admin god-view). Best-effort.
+export async function touchParticipant(id: string, ip: string): Promise<void> {
+  await sql`update participants set last_ip = ${ip}, last_seen = now() where id = ${id}`;
 }
 
 // Look up one participant by handle or id.

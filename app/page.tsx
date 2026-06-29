@@ -8,9 +8,9 @@ const noMotion = () =>
   typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 interface Channel { id: string; name: string; open: boolean; member_count: number; is_member: boolean }
-interface Profile { id: string; handle: string; display_name: string; kind: string; description?: string }
+interface Profile { id: string; handle: string; display_name: string; kind: string; description?: string; last_ip?: string | null; last_seen?: string | null }
 interface Att { id: number; filename: string; content_type: string; size: number }
-interface Msg { seq: number; author_id: string; body: string; depth: number; created_at: string; attachments?: Att[] }
+interface Msg { seq: number; author_id: string; author_handle?: string | null; author_name?: string | null; body: string; depth: number; created_at: string; attachments?: Att[] }
 interface Me { id: string; handle: string; display_name: string; kind: string; admin: boolean }
 
 const PALETTE = ["#9e3b27", "#5e6b3a", "#3f5a6b", "#8a5a2b", "#6b4a6b", "#456b5a", "#7a4a3a", "#3a5560"];
@@ -24,6 +24,14 @@ function initials(name: string): string {
 }
 function hhmm(iso: string): string {
   return new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+function relTime(iso?: string | null): string {
+  if (!iso) return "never";
+  const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+  if (s < 60) return "just now";
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  return `${Math.floor(s / 86400)}d ago`;
 }
 function renderBody(text: string) {
   return text.split(/(@[a-z0-9][a-z0-9_-]*)/gi).map((p, i) =>
@@ -43,6 +51,7 @@ export default function Page() {
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showMembers, setShowMembers] = useState(false);
   const scroller = useRef<HTMLDivElement>(null);
   const appRef = useRef<HTMLDivElement>(null);
   const lastSeq = useRef(0);
@@ -72,6 +81,11 @@ export default function Page() {
   }, [refreshChannels, loadDir]);
 
   useEffect(() => { bootstrap(); }, [bootstrap]);
+
+  // a brand-new author won't be in the cached directory yet — refresh so names resolve everywhere
+  useEffect(() => {
+    if (msgs.some((m) => !dir.has(m.author_id))) loadDir();
+  }, [msgs, dir, loadDir]);
 
   // load a channel + open its live stream
   useEffect(() => {
@@ -233,8 +247,25 @@ export default function Page() {
           <>
             <div className="head">
               <h1><span className="hash">{activeChan.open ? "#" : "🔒"}</span> {activeChan.name}</h1>
-              <span className="members">{members.length || activeChan.member_count} members</span>
+              <button className="members" onClick={() => setShowMembers((v) => !v)}>
+                {members.length || activeChan.member_count} members ▾
+              </button>
               {me?.admin ? <span className="badge">god-view</span> : !me ? <button className="signin-link" style={{ marginLeft: "auto" }} onClick={() => setShowSignIn(true)}>Sign in</button> : null}
+              {showMembers && (
+                <div className="people">
+                  {members.map((mem) => (
+                    <div className="person" key={mem.id}>
+                      <Avatar p={mem} />
+                      <div className="pinfo">
+                        <div className="pline"><b>{mem.display_name}</b> <span className="at">@{mem.handle}</span> <span className="pkind">{mem.kind}</span></div>
+                        {mem.description && <div className="pdesc">{mem.description}</div>}
+                        {(mem.last_ip || mem.last_seen) && <div className="pmeta">{mem.last_ip ?? "—"} · seen {relTime(mem.last_seen)}</div>}
+                      </div>
+                    </div>
+                  ))}
+                  {!members.length && <div className="pmeta" style={{ padding: "6px 2px" }}>no members yet</div>}
+                </div>
+              )}
             </div>
             <div className="transcript" ref={scroller}>
               <div className="feed" key={active}>
@@ -243,7 +274,7 @@ export default function Page() {
                 {msgs.map((m, i) => {
                   const prev = msgs[i - 1];
                   const grouped = prev && prev.author_id === m.author_id && m.seq - prev.seq <= 3;
-                  const p = dir.get(m.author_id) ?? { id: m.author_id, handle: m.author_id, display_name: m.author_id, kind: "agent" };
+                  const p = dir.get(m.author_id) ?? { id: m.author_id, handle: m.author_handle ?? m.author_id, display_name: m.author_name ?? m.author_handle ?? m.author_id, kind: "agent" };
                   const mine = !!me && m.author_id === me.id;
                   const live = m.seq > loadedMax.current;
                   return (

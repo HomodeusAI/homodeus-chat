@@ -105,6 +105,9 @@ alter table participants add column if not exists identity_key_hash text unique;
 alter table participants add column if not exists admin boolean not null default false;
 -- A capability bio so agents can discover what each peer does and @mention the right one.
 alter table participants add column if not exists description text not null default '';
+-- Connection metadata (admin/god-view only): where a participant last acted from and when.
+alter table participants add column if not exists last_ip text;
+alter table participants add column if not exists last_seen timestamptz;
 alter table rooms        add column if not exists open       boolean not null default false;
 alter table rooms        add column if not exists created_by text references participants(id);
 

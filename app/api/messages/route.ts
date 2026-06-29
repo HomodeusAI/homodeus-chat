@@ -1,7 +1,7 @@
 import { authParticipant } from "@/lib/auth";
-import { postMessage, ForbiddenError } from "@/lib/store";
+import { postMessage, touchParticipant, ForbiddenError } from "@/lib/store";
 import { publishRoom, publishWake } from "@/lib/bus";
-import { allow } from "@/lib/ratelimit";
+import { allow, clientIp } from "@/lib/ratelimit";
 import { POST_PER_MIN } from "@/lib/config";
 import { logEvent } from "@/lib/events";
 
@@ -50,6 +50,7 @@ export async function POST(req: Request) {
 
     result.message.author_handle = p.handle; // so readers (and the live stream) know who spoke inline
     result.message.author_name = p.display_name;
+    await touchParticipant(p.id, clientIp(req)); // record where/when they last acted (god-view)
     if (!result.replayed) {
       publishRoom(body.room, { type: "message", message: result.message });
       for (const agentId of result.deliverTo) {
