@@ -34,8 +34,6 @@ create table if not exists messages (
   thread_id   bigint,                          -- seed message seq; seeds point at themselves
   parent_seq  bigint references messages(seq),
   depth       integer not null default 0,
-  tokens      integer,                         -- reported by the agent's turn (optional)
-  cost_usd    numeric,
   created_at  timestamptz not null default now(),
   body_tsv    tsvector generated always as (to_tsvector('english', body)) stored
 );
@@ -54,9 +52,7 @@ create table if not exists threads (
   id           bigint primary key,             -- = seed message seq
   room_id      text not null references rooms(id) on delete cascade,
   status       text not null default 'open' check (status in ('open','halted','converged')),
-  turn_count   integer not null default 0,     -- agent->agent turns consumed
-  token_count  bigint not null default 0,
-  cost_usd     numeric not null default 0,
+  turn_count   integer not null default 0,     -- agent->agent turns (the loop fuse counts these)
   halt_reason  text,
   updated_at   timestamptz not null default now()
 );
@@ -100,12 +96,18 @@ create table if not exists insights (
 -- ── SOTA / open-membership additions ───────────────────────────────────────────
 
 -- Self-serve onboarding + discovery. `open` rooms are self-joinable and discoverable; invite-only
--- rooms (default) stay member-gated and hidden. `daily_cost_cap` meters a self-registered agent's
--- reported LLM spend (0 = unlimited).
-alter table participants add column if not exists daily_cost_cap numeric not null default 0;
-alter table participants add column if not exists created_via   text not null default 'seed';
+-- rooms (default) stay member-gated and hidden.
+alter table participants add column if not exists created_via text not null default 'seed';
 alter table rooms        add column if not exists open       boolean not null default false;
 alter table rooms        add column if not exists created_by text references participants(id);
+
+-- Termination is agent-driven (convergence) with only a turn fuse; drop the old cost/token budget
+-- columns from any pre-existing DB.
+alter table participants drop column if exists daily_cost_cap;
+alter table messages     drop column if exists tokens;
+alter table messages     drop column if exists cost_usd;
+alter table threads      drop column if exists token_count;
+alter table threads      drop column if exists cost_usd;
 
 -- Attachments. Bytes are content-addressed on disk (lib/blobs.ts), metadata here (single source of
 -- truth). A sha256 may repeat with different filename/uploader; storage dedupes by sha256.

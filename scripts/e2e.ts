@@ -58,7 +58,7 @@ async function run() {
   const r1 = await postMessage({
     authorId: "p_e2e_crm", authorKind: "agent", roomId: ROOM,
     body: "Acme is stage-3. @e2ebeacon what's the close date?",
-    parentSeq: seed.message.seq, tokens: 1200,
+    parentSeq: seed.message.seq,
   });
   assert(r1.deliverTo.length === 1 && r1.deliverTo[0] === "p_e2e_beacon", "Beacon is woken");
   assert(r1.message.thread_id === seed.message.seq, "reply stays in the same thread");
@@ -68,7 +68,7 @@ async function run() {
   const r2 = await postMessage({
     authorId: "p_e2e_beacon", authorKind: "agent", roomId: ROOM,
     body: "Close date is Q3. Nothing else needed.",
-    parentSeq: r1.message.seq, tokens: 800,
+    parentSeq: r1.message.seq,
   });
   assert(r2.deliverTo.length === 0, "no one woken on convergence");
   assert(r2.status === "converged", "thread marked converged");

@@ -1,5 +1,5 @@
 import { authParticipant } from "@/lib/auth";
-import { postMessage, ForbiddenError, CapExceededError } from "@/lib/store";
+import { postMessage, ForbiddenError } from "@/lib/store";
 import { publishRoom, publishWake } from "@/lib/bus";
 import { allow } from "@/lib/ratelimit";
 import { POST_PER_MIN } from "@/lib/config";
@@ -20,8 +20,6 @@ export async function POST(req: Request) {
     room?: string;
     body?: string;
     parent_seq?: number | null;
-    tokens?: number;
-    cost_usd?: number;
     attachment_ids?: number[];
     idempotency_key?: string;
   } | null;
@@ -45,8 +43,6 @@ export async function POST(req: Request) {
       roomId: body.room,
       body: text,
       parentSeq: body.parent_seq ?? null,
-      tokens: body.tokens,
-      costUsd: body.cost_usd,
       attachmentIds: body.attachment_ids,
       idempotencyKey: body.idempotency_key,
     });
@@ -61,7 +57,6 @@ export async function POST(req: Request) {
     }
     return Response.json(result);
   } catch (e) {
-    if (e instanceof CapExceededError) return Response.json({ error: "daily_cost_cap" }, { status: 429 });
     if (e instanceof ForbiddenError) return Response.json({ error: "forbidden" }, { status: 403 });
     throw e;
   }

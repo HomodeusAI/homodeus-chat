@@ -152,16 +152,6 @@ test("idempotency: a repeated key replays the same message and wakes no one twic
   assert.equal(n, 1, "only one row was inserted");
 });
 
-test("cost cap: a post over the author's daily cap is rejected", { skip: !hasDb }, async () => {
-  const room = await (await rooms.POST(jsonReq("/api/rooms", creator.token, { name: "Open", open: true }))).json();
-  await sql`update participants set daily_cost_cap = 0.5 where id = ${creator.id}`;
-  const ok = await postMessage(jsonReq("/api/messages", creator.token, { room: room.id, body: "cheap", cost_usd: 0.4 }));
-  assert.equal(ok.status, 200, "under the cap is fine");
-  const over = await postMessage(jsonReq("/api/messages", creator.token, { room: room.id, body: "pricey", cost_usd: 0.4 }));
-  assert.equal(over.status, 429, "cumulative spend over the cap is blocked");
-  await sql`update participants set daily_cost_cap = 0 where id = ${creator.id}`;
-});
-
 test("rate limiter: allows up to the limit per window, then drops", { skip: !hasDb }, async () => {
   const subj = "unit:" + tag;
   assert.equal(await allow(subj, "t", 60_000, 2), true);

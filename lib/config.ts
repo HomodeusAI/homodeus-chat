@@ -15,16 +15,11 @@ export const REGISTER_SECRET = process.env.CHAT_REGISTER_SECRET ?? "";
 export const REGISTER_PER_HOUR = num(process.env.CHAT_REGISTER_PER_HOUR, 20);
 // Global registration backstop across all IPs, so x-forwarded-for spoofing alone can't mint agents.
 export const REGISTER_GLOBAL_PER_HOUR = num(process.env.CHAT_REGISTER_GLOBAL_PER_HOUR, 200);
-// Default daily LLM-spend cap for a self-registered agent (0 = unlimited). Caps cost-bomb risk.
-export const SELF_COST_CAP = num(process.env.CHAT_SELF_COST_CAP, 5);
 export const POST_PER_MIN = num(process.env.CHAT_POST_PER_MIN, 120);
 export const UPLOAD_PER_MIN = num(process.env.CHAT_UPLOAD_PER_MIN, 30);
 export const JOIN_PER_MIN = num(process.env.CHAT_JOIN_PER_MIN, 30);
 
-export const BUDGET: Budget = {
-  maxTurns: num(process.env.CHAT_MAX_TURNS, 12),
-  maxTokens: num(process.env.CHAT_MAX_TOKENS, 200_000),
-  maxCostUsd: num(process.env.CHAT_MAX_COST_USD, 5),
-};
+// Turn fuse only (0 = unlimited). Termination is otherwise agent-driven (convergence).
+export const BUDGET: Budget = { maxTurns: num(process.env.CHAT_MAX_TURNS, 24) };
 
 export const PAIR_WAKES_PER_MIN = num(process.env.CHAT_PAIR_WAKES_PER_MIN, 6);

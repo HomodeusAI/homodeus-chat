@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { sql } from "./db";
 import { hashToken } from "./auth";
-import { BUDGET, PAIR_WAKES_PER_MIN, SELF_COST_CAP } from "./config";
+import { BUDGET, PAIR_WAKES_PER_MIN } from "./config";
 import { extractMentionHandles, resolveMentions } from "./mentions";
 import { decideDelivery, type Ledger, type ThreadStatus } from "./threads";
 import { minuteBucket, splitByCooldown } from "./cooldown";
@@ -22,8 +22,6 @@ export interface Message {
   thread_id: number;
   parent_seq: number | null;
   depth: number;
-  tokens: number | null;
-  cost_usd: string | null;
   created_at: string;
   attachments?: Attachment[];
 }
@@ -34,8 +32,6 @@ export interface PostInput {
   roomId: string;
   body: string;
   parentSeq?: number | null;
-  tokens?: number;
-  costUsd?: number;
   attachmentIds?: number[];
   idempotencyKey?: string;
 }
@@ -54,14 +50,6 @@ export class ForbiddenError extends Error {
   constructor(message = "forbidden") {
     super(message);
     this.name = "ForbiddenError";
-  }
-}
-
-// Thrown when an author's reported daily LLM spend would exceed their cap. Routes map it to 429.
-export class CapExceededError extends Error {
-  constructor(message = "daily cost cap exceeded") {
-    super(message);
-    this.name = "CapExceededError";
   }
 }
 
@@ -109,20 +97,6 @@ export async function postMessage(input: PostInput): Promise<PostResult> {
       }
     }
 
-    // Daily cost ceiling (only checked when the author reports spend): caps an open registrant's
-    // unbounded LLM burn that the per-thread breaker cannot see across many threads.
-    if ((input.costUsd ?? 0) > 0) {
-      const [me] = await tx<{ daily_cost_cap: string }[]>`
-        select daily_cost_cap from participants where id = ${input.authorId}`;
-      const cap = Number(me?.daily_cost_cap ?? 0);
-      if (cap > 0) {
-        const [spent] = await tx<{ s: string }[]>`
-          select coalesce(sum(cost_usd), 0) as s from messages
-          where author_id = ${input.authorId} and created_at > now() - interval '1 day'`;
-        if (Number(spent?.s ?? 0) + (input.costUsd ?? 0) > cap) throw new CapExceededError();
-      }
-    }
-
     const handles = extractMentionHandles(input.body);
     const { resolved } = resolveMentions(handles, handleToId, input.authorId);
     const mentionedAgentIds = resolved.filter((id) => agentIds.has(id));
@@ -141,9 +115,9 @@ export async function postMessage(input: PostInput): Promise<PostResult> {
     }
 
     const [msg] = await tx<Message[]>`
-      insert into messages (room_id, author_id, body, thread_id, parent_seq, depth, tokens, cost_usd)
+      insert into messages (room_id, author_id, body, thread_id, parent_seq, depth)
       values (${input.roomId}, ${input.authorId}, ${input.body}, ${threadId},
-              ${input.parentSeq ?? null}, ${depth}, ${input.tokens ?? null}, ${input.costUsd ?? null})
+              ${input.parentSeq ?? null}, ${depth})
       returning *`;
     if (!msg) throw new Error("insert failed");
 
@@ -178,36 +152,22 @@ export async function postMessage(input: PostInput): Promise<PostResult> {
         where participant_id = ${input.authorId} and key = ${input.idempotencyKey}`;
     }
 
-    const [thread] = await tx<
-      { turn_count: number; token_count: string; cost_usd: string; status: ThreadStatus }[]
-    >`
+    const [thread] = await tx<{ turn_count: number; status: ThreadStatus }[]>`
       insert into threads (id, room_id) values (${threadId}, ${input.roomId})
       on conflict (id) do update set updated_at = now()
-      returning turn_count, token_count, cost_usd, status`;
+      returning turn_count, status`;
     if (!thread) throw new Error("thread upsert failed");
 
-    const prev: Ledger = {
-      turnCount: thread.turn_count,
-      tokenCount: Number(thread.token_count),
-      costUsd: Number(thread.cost_usd),
-      status: thread.status,
-    };
+    const prev: Ledger = { turnCount: thread.turn_count, status: thread.status };
 
     const decision = decideDelivery(
       prev,
-      {
-        authorKind: input.authorKind,
-        mentionedAgentIds,
-        tokens: input.tokens,
-        costUsd: input.costUsd,
-      },
+      { authorKind: input.authorKind, mentionedAgentIds },
       BUDGET,
     );
 
     await tx`update threads set
         turn_count = ${decision.ledger.turnCount},
-        token_count = ${decision.ledger.tokenCount},
-        cost_usd = ${decision.ledger.costUsd},
         status = ${decision.ledger.status},
         halt_reason = ${decision.haltReason ?? null},
         updated_at = now()
@@ -444,8 +404,8 @@ export async function registerParticipant(
   // kind is forced to 'agent': 'human' is an operator privilege (resets the budget ledger and
   // bypasses the cooldown), so it is never self-serve.
   const rows = await sql`
-    insert into participants (id, handle, kind, display_name, token_hash, created_via, daily_cost_cap)
-    values (${id}, ${handle}, 'agent', ${displayName}, ${hashToken(token)}, 'self', ${SELF_COST_CAP})
+    insert into participants (id, handle, kind, display_name, token_hash, created_via)
+    values (${id}, ${handle}, 'agent', ${displayName}, ${hashToken(token)}, 'self')
     on conflict (handle) do nothing returning id`;
   if (!rows.length) throw new ForbiddenError("handle taken");
   return { id, handle, token };
