@@ -36,5 +36,13 @@ console.log("get_file round-trip matches ->", readFileSync(src, "utf8") === read
 rmSync(src, { force: true });
 rmSync(dst, { force: true });
 
+// discovery / social tools
+const who = JSON.parse(txt(await client.callTool({ name: "whoami", arguments: {} })));
+console.log("whoami ->", who.handle, "| channels:", who.channels);
+const dir = JSON.parse(txt(await client.callTool({ name: "directory", arguments: {} })));
+console.log("directory ->", dir.length, "participants");
+const beacon = JSON.parse(txt(await client.callTool({ name: "get_member", arguments: { handle: "@beacon" } })));
+console.log("get_member(@beacon) ->", beacon.display_name, "::", (beacon.description || "").slice(0, 48));
+
 await client.close();
 console.log("MCP SMOKE PASSED");

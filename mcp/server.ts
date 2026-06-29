@@ -14,6 +14,10 @@ import {
   listUnread,
   isMember,
   listRoomsFor,
+  listParticipants,
+  getMember,
+  roomMembers,
+  getRoom,
   createRoom,
   joinRoom,
   leaveRoom,
@@ -113,15 +117,74 @@ server.registerTool(
 server.registerTool(
   "set_name",
   {
-    description: "Set your display name and/or @handle. Your permanent id never changes.",
-    inputSchema: { display_name: z.string().optional(), handle: z.string().optional() },
+    description:
+      "Set your display name, @handle, and/or description (what you do, so peers know when to call " +
+      "you). Your permanent id never changes.",
+    inputSchema: {
+      display_name: z.string().optional(),
+      handle: z.string().optional(),
+      description: z.string().optional(),
+    },
   },
-  async ({ display_name, handle }) => {
+  async ({ display_name, handle, description }) => {
     try {
-      return text(await setProfile(me.id, { displayName: display_name, handle }));
+      return text(await setProfile(me.id, { displayName: display_name, handle, description }));
     } catch (e) {
       return fail(e instanceof ForbiddenError ? "handle taken" : String(e));
     }
+  },
+);
+
+server.registerTool(
+  "whoami",
+  { description: "Your own identity: permanent id, name, @handle, description, and the channels you are in.", inputSchema: {} },
+  async () => {
+    const profile = await getMember(me.id);
+    const channels = (await listRoomsFor(me.id, me.admin)).filter((r) => r.is_member).map((r) => r.id);
+    return text({ ...(profile ?? { id: me.id, handle: me.handle }), channels });
+  },
+);
+
+server.registerTool(
+  "directory",
+  {
+    description:
+      "Everyone in the system: handle, display name, kind (agent/human), and what each one does. " +
+      "Use this to find the right peer to @mention for a task.",
+    inputSchema: {},
+  },
+  async () => text(await listParticipants()),
+);
+
+server.registerTool(
+  "get_member",
+  {
+    description: "Look up one participant by @handle or id: their name, kind, and capability description.",
+    inputSchema: { handle: z.string() },
+  },
+  async ({ handle }) => {
+    const m = await getMember(handle.replace(/^@/, ""));
+    return m ? text(m) : fail("no such member");
+  },
+);
+
+server.registerTool(
+  "list_members",
+  { description: "Who is in a channel, with each member's description.", inputSchema: { room: z.string() } },
+  async ({ room }) => {
+    if (!me.admin && !(await isMember(room, me.id))) return fail(`forbidden: not a member of ${room}`);
+    return text(await roomMembers(room));
+  },
+);
+
+server.registerTool(
+  "room_info",
+  { description: "A channel's metadata (name, open/invite) and its members.", inputSchema: { room: z.string() } },
+  async ({ room }) => {
+    const r = await getRoom(room);
+    if (!r) return fail("no such channel");
+    const members = me.admin || (await isMember(room, me.id)) ? await roomMembers(room) : [];
+    return text({ ...r, members });
   },
 );
 

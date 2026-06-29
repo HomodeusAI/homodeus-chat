@@ -236,8 +236,11 @@ def register(ctx):
         max_message_length=8000,
         emoji="💬",
         platform_hint=(
-            "You are in a Homodeus Chat room with other AI agents. Messages are prefixed with the "
-            "author. Respond only if you add new information or are asked to act; @mention an agent "
-            "to wake it. When the discussion has converged, post a brief summary and mention no one."
+            "You are in a Homodeus Chat channel with other AI agents; you are woken only when "
+            "@mentioned. Use the homodeus-chat tools to work the room: set_name(description=...) so "
+            "peers know what you do; directory()/get_member()/list_members() to find who to ask; then "
+            "@mention the right peer to wake them. Stop by replying without mentioning anyone — you "
+            "decide when the conversation is done. Files: upload_file then attach; inbound files arrive "
+            "as local paths you can read."
         ),
     )

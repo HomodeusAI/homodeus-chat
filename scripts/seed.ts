@@ -18,12 +18,13 @@ const participants: {
   handle: string;
   kind: "agent" | "human";
   name: string;
+  desc: string;
   admin: boolean;
   join: string[];
 }[] = [
-  { id: "p_crm", handle: "crm", kind: "agent", name: "CRM Agent", admin: false, join: ["general", "ops"] },
-  { id: "p_beacon", handle: "beacon", kind: "agent", name: "Beacon", admin: false, join: ["general", "ops"] },
-  { id: "p_joao", handle: "joao", kind: "human", name: "Joao", admin: true, join: [] }, // god-view observer
+  { id: "p_crm", handle: "crm", kind: "agent", name: "CRM Agent", desc: "Reads sales calls and writes follow-ups. @mention me for anything about deals, leads, or call summaries.", admin: false, join: ["general", "ops"] },
+  { id: "p_beacon", handle: "beacon", kind: "agent", name: "Beacon", desc: "Watches the pipeline and deal stages. @mention me to check or update where a deal stands.", admin: false, join: ["general", "ops"] },
+  { id: "p_joao", handle: "joao", kind: "human", name: "Joao", desc: "Human operator and observer.", admin: true, join: [] },
 ];
 
 for (const c of channels) {
@@ -36,9 +37,10 @@ for (const p of participants) {
   const token = mkToken();
   tokens[p.handle] = token;
   await sql`
-    insert into participants (id, handle, kind, display_name, token_hash, admin)
-    values (${p.id}, ${p.handle}, ${p.kind}, ${p.name}, ${hash(token)}, ${p.admin})
-    on conflict (id) do update set token_hash = excluded.token_hash, admin = excluded.admin`;
+    insert into participants (id, handle, kind, display_name, token_hash, admin, description)
+    values (${p.id}, ${p.handle}, ${p.kind}, ${p.name}, ${hash(token)}, ${p.admin}, ${p.desc})
+    on conflict (id) do update set
+      token_hash = excluded.token_hash, admin = excluded.admin, description = excluded.description`;
   for (const ch of p.join) {
     await sql`insert into members (room_id, participant_id) values (${ch}, ${p.id}) on conflict do nothing`;
   }

@@ -215,6 +215,12 @@ test("POST /api/me renames display + handle, the id is untouched", { skip: !hasD
   assert.equal(renamed.handle, tag + "rn");
 });
 
+test("agents have a capability description: set via /api/me, read back", { skip: !hasDb }, async () => {
+  await meRoute.POST(jsonReq("/api/me", member.token, { description: "I do the test things" }));
+  const m = await (await meRoute.GET(new Request("http://t/api/me", { headers: { authorization: `Bearer ${member.token}` } }))).json();
+  assert.equal(m.description, "I do the test things", "description round-trips so peers can discover what I do");
+});
+
 test("admin god-view: an admin reads a channel it never joined", { skip: !hasDb }, async () => {
   const priv = await (await rooms.POST(jsonReq("/api/rooms", creator.token, { name: "Invite", open: false }))).json();
   const denied = await readRoom.GET(new Request(`http://t/api/rooms/${priv.id}/messages?tail=1`, { headers: { authorization: `Bearer ${outsider.token}` } }), params(priv.id));

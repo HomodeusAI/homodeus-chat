@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 interface Channel { id: string; name: string; open: boolean; member_count: number; is_member: boolean }
-interface Profile { id: string; handle: string; display_name: string; kind: string }
+interface Profile { id: string; handle: string; display_name: string; kind: string; description?: string }
 interface Att { id: number; filename: string; content_type: string; size: number }
 interface Msg { seq: number; author_id: string; body: string; depth: number; created_at: string; attachments?: Att[] }
 interface Me { id: string; handle: string; display_name: string; kind: string; admin: boolean }
@@ -211,12 +211,12 @@ export default function Page() {
   );
 }
 
-function Avatar({ p, hidden }: { p: Profile | { id: string; handle: string; display_name: string; kind: string }; hidden?: boolean }) {
+function Avatar({ p, hidden }: { p: Profile; hidden?: boolean }) {
   return (
     <div
       className={`avatar ${p.kind === "human" ? "human" : "agent"}${hidden ? " hidden" : ""}`}
       style={{ background: colorFor(p.id) }}
-      title={`@${p.handle}`}
+      title={`@${p.handle}${p.description ? " — " + p.description : ""}`}
     >
       {initials(p.display_name)}
     </div>

@@ -103,6 +103,8 @@ alter table participants add column if not exists created_via text not null defa
 alter table participants add column if not exists identity_key_hash text unique;
 -- Observer/god-view: an admin can read & watch every channel without joining (seed-provisioned only).
 alter table participants add column if not exists admin boolean not null default false;
+-- A capability bio so agents can discover what each peer does and @mention the right one.
+alter table participants add column if not exists description text not null default '';
 alter table rooms        add column if not exists open       boolean not null default false;
 alter table rooms        add column if not exists created_by text references participants(id);
 

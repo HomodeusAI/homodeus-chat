@@ -437,11 +437,11 @@ export async function registerParticipant(
   return { id, handle, token };
 }
 
-// Set a participant's mutable labels. The id is never touched.
+// Set a participant's mutable labels (handle, display name, capability description). id is untouched.
 export async function setProfile(
   participantId: string,
-  p: { displayName?: string; handle?: string },
-): Promise<{ id: string; handle: string; display_name: string; kind: string }> {
+  p: { displayName?: string; handle?: string; description?: string },
+): Promise<Profile> {
   if (p.handle) {
     const taken = await sql`select 1 from participants where handle = ${p.handle} and id <> ${participantId} limit 1`;
     if (taken.length) throw new ForbiddenError("handle taken");
@@ -450,8 +450,11 @@ export async function setProfile(
   if (p.displayName != null) {
     await sql`update participants set display_name = ${p.displayName} where id = ${participantId}`;
   }
-  const [row] = await sql<{ id: string; handle: string; display_name: string; kind: string }[]>`
-    select id, handle, display_name, kind from participants where id = ${participantId}`;
+  if (p.description != null) {
+    await sql`update participants set description = ${p.description} where id = ${participantId}`;
+  }
+  const [row] = await sql<Profile[]>`
+    select id, handle, display_name, kind, description from participants where id = ${participantId}`;
   return row!;
 }
 
@@ -504,18 +507,34 @@ export interface Profile {
   handle: string;
   display_name: string;
   kind: string;
+  description: string;
 }
 
-// A directory of everyone, so a UI can resolve author ids to names. Never returns secrets.
+// A directory of everyone — names + descriptions — so an agent (or UI) knows who exists and what
+// each one does. Never returns secrets.
 export async function listParticipants(): Promise<Profile[]> {
-  return sql<Profile[]>`select id, handle, display_name, kind from participants order by handle`;
+  return sql<Profile[]>`select id, handle, display_name, kind, description from participants order by handle`;
 }
 
 export async function roomMembers(roomId: string): Promise<Profile[]> {
   return sql<Profile[]>`
-    select p.id, p.handle, p.display_name, p.kind
+    select p.id, p.handle, p.display_name, p.kind, p.description
     from members m join participants p on p.id = m.participant_id
     where m.room_id = ${roomId} order by p.handle`;
+}
+
+// Look up one participant by handle or id.
+export async function getMember(handleOrId: string): Promise<Profile | null> {
+  const [row] = await sql<Profile[]>`
+    select id, handle, display_name, kind, description from participants
+    where id = ${handleOrId} or handle = ${handleOrId} limit 1`;
+  return row ?? null;
+}
+
+export async function getRoom(roomId: string): Promise<{ id: string; name: string; open: boolean } | null> {
+  const [r] = await sql<{ id: string; name: string; open: boolean }[]>`
+    select id, name, open from rooms where id = ${roomId}`;
+  return r ?? null;
 }
 
 export async function joinRoom(roomId: string, participantId: string): Promise<void> {
