@@ -1,0 +1,213 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - link "Ir para conteúdo principal" [ref=e4] [cursor=pointer]:
+      - /url: "#pesquisarofertas"
+    - banner [ref=e6]:
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - generic [ref=e10]:
+            - button "Fazer Login" [ref=e11] [cursor=pointer]
+            - link "Esqueceu-se da password?" [ref=e12] [cursor=pointer]:
+              - /url: https://www.sgu.gov.pt/v3/login.aspx?action=recuperarPassword&retorno=aHR0cHM6Ly93d3cuYmVwLmdvdi5wdC9EZWZhdWx0LmFzcHg=
+          - button "Criar registo" [ref=e13] [cursor=pointer]
+          - link "Registar Organismo" [ref=e14] [cursor=pointer]:
+            - /url: javascript:__doPostBack('ctl00$ctl00$lnkRegistarOrg','')
+        - generic:
+          - link "Logotipo BEP":
+            - /url: ../../Default.aspx
+            - img "Logotipo BEP" [ref=e15] [cursor=pointer]
+      - navigation [ref=e16]:
+        - list [ref=e18]:
+          - listitem [ref=e19]:
+            - link "Ofertas" [ref=e20] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - listitem [ref=e21]:
+            - link "Conta do Utilizador" [ref=e22] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - listitem [ref=e23]:
+            - link "Programa de incentivos ao interior" [ref=e24] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - listitem [ref=e25]:
+            - link "Ofertas PRR" [ref=e26] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - listitem [ref=e27]:
+            - link "Sobre a BEP" [ref=e28] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - listitem [ref=e29]:
+            - link "Ajuda" [ref=e30] [cursor=pointer]:
+              - /url: javascript:void(0)
+    - generic [ref=e31]:
+      - generic [ref=e33]:
+        - list [ref=e35]:
+          - listitem [ref=e36]:
+            - link "Início" [ref=e37] [cursor=pointer]:
+              - /url: ../../Default.aspx
+        - text: Detalhe de Oferta de Emprego
+        - list [ref=e38]:
+          - listitem [ref=e39]:
+            - link "Caracterização da Oferta" [ref=e40]:
+              - /url: "#tab1"
+          - listitem [ref=e41]:
+            - link "Requisitos de Admissão" [ref=e42] [cursor=pointer]:
+              - /url: "#tab2"
+          - listitem [ref=e43]:
+            - link "Formalização Candidaturas" [ref=e44] [cursor=pointer]:
+              - /url: "#tab3"
+          - listitem [ref=e45]:
+            - link "Descrição do Procedimento" [ref=e46] [cursor=pointer]:
+              - /url: "#tab4"
+      - generic [ref=e48]:
+        - generic [ref=e49] [cursor=pointer]:
+          - text: ver tudo
+          - generic [ref=e50]: 
+        - generic [ref=e53]:
+          - generic [ref=e54]:
+            - generic [ref=e55]:
+              - generic [ref=e56]: "Código da Oferta:"
+              - generic [ref=e57]: OE202606/1715
+            - generic [ref=e58]:
+              - generic [ref=e59]: "Tipo Oferta:"
+              - generic [ref=e60]: Procedimento Concursal Comum
+            - generic [ref=e61]:
+              - generic [ref=e62]: "Estado:"
+              - generic [ref=e63]:
+                - text: Ativa
+                - img "estado" [ref=e64]
+            - generic [ref=e65]:
+              - generic [ref=e66]: "Nível Orgânico:"
+              - generic [ref=e67]: Câmaras Municipais
+            - generic [ref=e68]:
+              - generic [ref=e69]: "Órgão/Serviço:"
+              - link "Câmara Municipal de Aveiro" [ref=e72] [cursor=pointer]:
+                - /url: "#"
+            - generic [ref=e73]:
+              - generic [ref=e74]: "Vínculo:"
+              - generic [ref=e75]: CTFP por tempo indeterminado
+            - generic [ref=e76]:
+              - generic [ref=e77]: "Regime:"
+              - generic [ref=e78]: Carreiras Gerais
+            - generic [ref=e79]:
+              - generic [ref=e80]: "Carreira:"
+              - generic [ref=e81]: Técnico Superior
+            - generic [ref=e82]:
+              - generic [ref=e83]: "Categoria:"
+              - generic [ref=e84]: Técnico Superior
+            - generic [ref=e85]:
+              - generic [ref=e86]: "Grau de Complexidade:"
+              - generic [ref=e87]: "3"
+            - generic [ref=e88]:
+              - generic [ref=e89]: "Remuneração:"
+              - generic [ref=e90]: 1.499,15 €
+            - generic [ref=e91]:
+              - generic [ref=e92]: "Suplemento Mensal:"
+              - generic [ref=e93]: 0,00 EUR
+            - generic [ref=e94]:
+              - generic [ref=e95]: "Caracterização do Posto de Trabalho:"
+              - generic [ref=e97]:
+                - text: "O conteúdo funcional genérico das carreiras gerais da Administração Pública encontra-se descrito no anexo da Lei n.º 35/2014, de 20 de junho, a que se refere o n.º 2 do seu art.º 88.º, correspondendo aos graus de complexidade funcional 3, 2 e 1, consoante se trate da carreira e categoria de Técnico Superior, Assistente Técnico ou Assistente Operacional, respetivamente, e complementam-se com a seguinte descrição de funções:"
+                - text: Referência A – Técnico Superior – área de Design – Divisão de Cultura e Turismo – Design gráfico, conceção, produção e gestão de conteúdos gráficos para suportes impressos e digitais; desenvolvimento de materiais de divulgação e promoção de espetáculos, eventos, projetos e demais iniciativas culturais do Teatro Aveirense; gestão, atualização e monitorização das redes sociais Instagram e Facebook (criação de conteúdos, estatísticas, respostas a contatos); gestão de sites (inserção e atualização de conteúdos, atualização de banners); cobertura fotográfica de eventos, ensaios, residências artísticas, conferências e outras iniciativas; criação e edição de conteúdos fotográficos para fins de comunicação nas redes sociais ou outros suportes; elaboração de pareceres, informações técnicas, relatórios e outros documentos de suporte à decisão; desempenho das demais funções, procedimentos ou tarefas que lhe sejam cometidos por lei, deliberação, despacho ou determinação superior, no âmbito das atribuições da unidade orgânica onde se integra.
+          - table [ref=e100]:
+            - rowgroup [ref=e101]:
+              - row "Local Trabalho Nº Postos Morada Localidade Código Postal Distrito Concelho" [ref=e102]:
+                - cell "Local Trabalho" [ref=e103]
+                - cell "Nº Postos" [ref=e104]
+                - cell "Morada" [ref=e105]
+                - cell "Localidade" [ref=e106]
+                - cell "Código Postal" [ref=e107]
+                - cell "Distrito" [ref=e108]
+                - cell "Concelho" [ref=e109]
+              - row "Câmara Municipal de Aveiro 1 Praça da República, Apartado 244 Aveiro 3810156 AVEIRO Aveiro Aveiro" [ref=e110]:
+                - cell "Câmara Municipal de Aveiro" [ref=e111]
+                - cell "1" [ref=e112]
+                - cell "Praça da República, Apartado 244" [ref=e113]
+                - cell "Aveiro" [ref=e114]
+                - cell "3810156 AVEIRO" [ref=e115]
+                - cell "Aveiro" [ref=e116]
+                - cell "Aveiro" [ref=e117]
+          - generic [ref=e120]:
+            - table
+          - generic [ref=e121]:
+            - generic [ref=e122]: "Total Postos de Trabalho:"
+            - generic [ref=e124]: "1"
+          - generic [ref=e125]:
+            - generic [ref=e126]: "Quota para Portadores de Deficiência:"
+            - generic [ref=e127]: "0"
+          - generic [ref=e130]: "Observações:"
+        - paragraph
+        - paragraph
+        - generic [ref=e132]:
+          - generic [ref=e133]:
+            - link "Imprimir para PDF" [ref=e134] [cursor=pointer]:
+              - /url: javascript:window.open('../ImprimirMapa.aspx?rn=DETALHEOFERTA&idOferta=151406'); void(0);
+            - link "Imprimir" [ref=e135] [cursor=pointer]:
+              - /url: javascript:window.print()
+            - link " Voltar ao topo" [ref=e136] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e137]: 
+              - text: Voltar ao topo
+          - link " Voltar" [ref=e139] [cursor=pointer]:
+            - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$ucVoltar','')
+            - generic [ref=e140]: 
+            - text: Voltar
+  - contentinfo [ref=e142]:
+    - generic [ref=e146]:
+      - link "Logo Governo de Portugal" [ref=e149] [cursor=pointer]:
+        - /url: http://www.portugal.gov.pt/pt.aspx
+        - img "Logo Governo de Portugal" [ref=e150]
+      - generic [ref=e152]:
+        - generic [ref=e153]: Entidade gestora
+        - link "Logo INA" [ref=e154] [cursor=pointer]:
+          - /url: http://www.dgaep.gov.pt/
+          - img "Logo INA" [ref=e155]
+      - generic [ref=e157]:
+        - generic [ref=e158]: Desenvolvimento e apoio técnico
+        - link "Logo ESPAP" [ref=e159] [cursor=pointer]:
+          - /url: http://www.espap.gov.pt/
+          - img "Logo ESPAP" [ref=e160]
+    - generic [ref=e162]:
+      - generic [ref=e163]:
+        - generic [ref=e164]:
+          - generic [ref=e165]: Ofertas
+          - link "Pesquisar Oferta" [ref=e166] [cursor=pointer]:
+            - /url: Oferta_Pesquisa_basica.aspx
+          - link "Pesquisar Resultados" [ref=e167] [cursor=pointer]:
+            - /url: Pesquisa_Resultados.aspx
+          - link "Listar Oferta Dirigentes Superiores" [ref=e168] [cursor=pointer]:
+            - /url: ../CReSAP/CReSAP_Pesquisa.aspx
+          - link "Formulários" [ref=e169] [cursor=pointer]:
+            - /url: javascript:__doPostBack('ctl00$ctl00$lnkbtnformulario','')
+        - generic [ref=e170]:
+          - generic [ref=e171]: Bolsa de Emprego Público
+          - link "Diploma" [ref=e172] [cursor=pointer]:
+            - /url: ../SobreBep/Diploma.aspx
+          - link "Objetivos" [ref=e173] [cursor=pointer]:
+            - /url: ../SobreBep/Objectivos.aspx
+          - link "Funcionalidades" [ref=e174] [cursor=pointer]:
+            - /url: ../SobreBep/Funcionalidades.aspx
+          - link "Acessibilidade" [ref=e175] [cursor=pointer]:
+            - /url: ../Acessibilidade.aspx
+          - link "Entidade Gestora" [ref=e176] [cursor=pointer]:
+            - /url: ../SobreBep/EntidadeGestora.aspx
+        - generic [ref=e177]:
+          - generic [ref=e178]: Links Úteis
+          - link "Oportunidades na UE" [ref=e179] [cursor=pointer]:
+            - /url: javascript:void(0);
+          - link "Eures" [ref=e180] [cursor=pointer]:
+            - /url: https://eures.europa.eu/jobseekers_pt
+          - link "EPSO" [ref=e181] [cursor=pointer]:
+            - /url: https://eu-careers.europa.eu/en/about-epso
+          - link "Carreiras Internacionais" [ref=e182] [cursor=pointer]:
+            - /url: http://www.carreirasinternacionais.eu
+          - link "Instituto Diplomático" [ref=e183] [cursor=pointer]:
+            - /url: https://idi.mne.gov.pt/pt/oportunidades/carreiras-internacionais
+          - link "EUROCID" [ref=e184] [cursor=pointer]:
+            - /url: https://eurocid.mne.gov.pt/empregos
+          - link "Org. Int. do Trabalho" [ref=e185] [cursor=pointer]:
+            - /url: https://www.ilo.org/lisbon/lang--pt/index.htm
+          - link "OCDE" [ref=e186] [cursor=pointer]:
+            - /url: http://www.oecd.org/careers/
+          - link "Netemprego (IEFP)" [ref=e187] [cursor=pointer]:
+            - /url: https://iefponline.iefp.pt/IEFP/pesquisas/search.do?cat=ofertaEmprego
+      - generic [ref=e189]:
+        - generic [ref=e190]: Presidência do Conselho de Ministros
+        - generic [ref=e191]: BEP v5.0.1.5 de 2025-12-03 @ 266

@@ -1,0 +1,227 @@
+- generic [active] [ref=e1]:
+  - dialog "Responsible use of your data" [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e5]:
+        - img "logo" [ref=e7]
+        - link "Cookiebot by Usercentrics - opens in a new window" [ref=e8] [cursor=pointer]:
+          - /url: https://www.cookiebot.com/en/what-is-behind-powered-by-cookiebot/?utm_source=banner_cb&utm_medium=referral&utm_content=v2
+          - img [ref=e9]
+      - tablist [ref=e36]:
+        - tab "Consent" [selected] [ref=e37] [cursor=pointer]
+        - tab "Details" [ref=e38] [cursor=pointer]
+        - tab "Ad Settings" [ref=e39] [cursor=pointer]
+        - tab "About" [ref=e40] [cursor=pointer]
+      - generic [ref=e41]:
+        - tabpanel "Consent" [ref=e42]:
+          - generic [ref=e44]:
+            - heading "Responsible use of your data" [level=2] [ref=e45]
+            - generic [ref=e46]:
+              - text: We and
+              - link "our 1022 partners" [ref=e47] [cursor=pointer]:
+                - /url: "#"
+              - text: process your personal data, e.g. your IP-number, using technology such as cookies to store and access information on your device in order to serve personalized ads and content, ad and content measurement, audience research and services development. You have a choice in who uses your data and for what purposes. Your privacy choices are only applicable on this digital property where you have made your choices. You can change or withdraw your consent any time from the Cookie Declaration or by clicking on the Privacy trigger icon.
+              - generic [ref=e48]:
+                - text: "If you allow, we would also like to:"
+                - list [ref=e49]:
+                  - listitem [ref=e50]: Collect information about your geographical location which can be accurate to within several meters
+                  - listitem [ref=e51]: Identify your device by actively scanning it for specific characteristics (fingerprinting)
+              - text: Find out more about how your personal data is processed and set your preferences in the
+              - link "details section" [ref=e52] [cursor=pointer]:
+                - /url: "#"
+              - text: .
+              - text: We use cookies to personalise content and ads, to provide social media features and to analyse our traffic. We also share information about your use of our site with our social media, advertising and analytics partners who may combine it with other information that you’ve provided to them or that they’ve collected from your use of their services.
+          - group "Consent Selection" [ref=e59]:
+            - generic [ref=e60]: Consent Selection
+            - generic [ref=e61]:
+              - generic [ref=e62]:
+                - strong [ref=e64]: Necessary
+                - generic [ref=e65]:
+                  - checkbox "Necessary" [checked] [disabled]
+              - generic [ref=e66]:
+                - strong [ref=e68] [cursor=pointer]: Preferences
+                - switch "Preferences" [checked] [ref=e70] [cursor=pointer]
+              - generic [ref=e71]:
+                - strong [ref=e73] [cursor=pointer]: Statistics
+                - switch "Statistics" [checked] [ref=e75] [cursor=pointer]
+              - generic [ref=e76]:
+                - strong [ref=e78] [cursor=pointer]: Marketing
+                - switch "Marketing" [checked] [ref=e80] [cursor=pointer]
+        - text:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+      - generic [ref=e84]:
+        - button "Allow selection" [ref=e85] [cursor=pointer]
+        - button "Allow all" [ref=e86] [cursor=pointer]
+  - banner [ref=e87]:
+    - navigation [ref=e89]:
+      - text: 
+      - link "net-empregos logo" [ref=e90] [cursor=pointer]:
+        - /url: /index.asp
+        - img "net-empregos logo" [ref=e91]
+      - generic [ref=e92]:
+        - list [ref=e93]:
+          - listitem [ref=e94]:
+            - link " Pesquisar Ofertas" [ref=e95] [cursor=pointer]:
+              - /url: /index.asp
+              - generic [ref=e96]: 
+              - text: Pesquisar Ofertas
+          - listitem [ref=e97]:
+            - link " Candidato" [ref=e98] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e99]: 
+              - text: Candidato
+            - text:   
+          - listitem [ref=e100]:
+            - link " Empresa" [ref=e101] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e102]: 
+              - text: Empresa
+            - text:        
+          - listitem [ref=e103]:
+            - link " Formação" [ref=e104] [cursor=pointer]:
+              - /url: /formacao.asp
+              - generic [ref=e105]: 
+              - text: Formação
+          - listitem [ref=e106]:
+            - link " Contactos" [ref=e107] [cursor=pointer]:
+              - /url: /contactos.asp
+              - generic [ref=e108]: 
+              - text: Contactos
+        - list [ref=e109]:
+          - listitem [ref=e110]:
+            - link " Login" [ref=e111] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e112]: 
+              - text: Login
+            - text:  
+          - listitem [ref=e113]:
+            - link " Registar" [ref=e114] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e115]: 
+              - text: Registar
+            - text:  
+        - link "logo" [ref=e116] [cursor=pointer]:
+          - /url: /index.asp
+          - img "logo" [ref=e117]
+  - generic [ref=e122]:
+    - generic [ref=e123]:
+      - heading " Login de Candidato" [level=3] [ref=e124]:
+        - generic [ref=e125]: 
+        - text: Login de Candidato
+      - generic [ref=e126]:
+        - textbox "Email ou Login" [ref=e128]
+        - textbox "Password" [ref=e130]
+        - iframe [ref=e135]:
+          - generic [ref=f13e2]:
+            - generic [ref=f13e3]:
+              - checkbox "I'm not a robot" [ref=f13e7]
+              - generic [ref=f13e11]: I'm not a robot
+              - generic [ref=f13e13]:
+                - text: This site is exceeding
+                - link "reCAPTCHA Enterprise free quota" [ref=f13e14] [cursor=pointer]:
+                  - /url: https://cloud.google.com/recaptcha/docs/billing-information
+                - text: .
+            - generic [ref=f13e18]: reCAPTCHA
+        - link "Reminder" [ref=e137] [cursor=pointer]:
+          - /url: "#"
+          - text: Esqueceu a Password?
+        - button "Login" [ref=e140] [cursor=pointer]
+    - generic [ref=e142]:
+      - text: Ainda não tem Registo?
+      - link "Registe-se aqui" [ref=e143] [cursor=pointer]:
+        - /url: registar_novo.asp
+  - contentinfo [ref=e144]:
+    - generic [ref=e146]:
+      - img "logo" [ref=e149]
+      - generic [ref=e151]:
+        - heading "Net-Empregos" [level=4] [ref=e152]
+        - list [ref=e153]:
+          - listitem [ref=e154]:
+            - link "Sobre Nós" [ref=e155] [cursor=pointer]:
+              - /url: /sobre.asp
+          - listitem [ref=e156]:
+            - link "Política de Privacidade e Termos de Utilização" [ref=e157] [cursor=pointer]:
+              - /url: /politica-privacidade.asp
+          - listitem [ref=e158]:
+            - link "Publicidade" [ref=e159] [cursor=pointer]:
+              - /url: /publicidade_info.asp
+          - listitem [ref=e160]:
+            - link "Contactos" [ref=e161] [cursor=pointer]:
+              - /url: /contactos.asp
+      - generic [ref=e163]:
+        - heading "Ofertas Emprego" [level=4] [ref=e164]
+        - list [ref=e165]:
+          - listitem [ref=e166]:
+            - link "Ultimas Ofertas" [ref=e167] [cursor=pointer]:
+              - /url: /pesquisa-empregos.asp
+          - listitem [ref=e168]:
+            - link "Ofertas por Cidades" [ref=e169] [cursor=pointer]:
+              - /url: /mais-emprego-localidades.asp
+          - listitem [ref=e170]:
+            - link "Ofertas por Categoria" [ref=e171] [cursor=pointer]:
+              - /url: /mais-emprego.asp
+          - listitem [ref=e172]:
+            - link "Ofertas por Distrito e Categoria" [ref=e173] [cursor=pointer]:
+              - /url: /mais-emprego-cidades-categorias-html.asp
+          - listitem [ref=e174]:
+            - link "Pesquisas Populares" [ref=e175] [cursor=pointer]:
+              - /url: /lista-top-pesquisas.html.asp
+      - generic [ref=e177]:
+        - heading "Candidato" [level=4] [ref=e178]
+        - list [ref=e179]:
+          - listitem [ref=e180]:
+            - link "Login Candidato" [ref=e181] [cursor=pointer]:
+              - /url: /loginc.asp
+          - listitem [ref=e182]:
+            - link "Registar Candidato" [ref=e183] [cursor=pointer]:
+              - /url: /registar_novo.asp
+      - generic [ref=e185]:
+        - heading "Empresa" [level=4] [ref=e186]
+        - list [ref=e187]:
+          - listitem [ref=e188]:
+            - link "Publicar Oferta" [ref=e189] [cursor=pointer]:
+              - /url: /anuncio.asp
+          - listitem [ref=e190]:
+            - link "Login Empresa" [ref=e191] [cursor=pointer]:
+              - /url: https://empresa.net-empregos.com/LoginE.asp
+          - listitem [ref=e192]:
+            - link "Registar Empresa" [ref=e193] [cursor=pointer]:
+              - /url: https://empresa.net-empregos.com/registar_empresa_2.asp
+      - generic [ref=e195]:
+        - heading "Siga-nos!" [level=4] [ref=e196]
+        - list [ref=e197]:
+          - listitem [ref=e198]:
+            - link "Facebook" [ref=e199] [cursor=pointer]:
+              - /url: https://www.facebook.com/netempregos
+          - listitem [ref=e200]:
+            - link "Twitter" [ref=e201] [cursor=pointer]:
+              - /url: https://twitter.com/netempregos
+          - listitem [ref=e202]:
+            - link "LinkedIn" [ref=e203] [cursor=pointer]:
+              - /url: https://www.linkedin.com/company/net-empregos
+          - listitem [ref=e204]:
+            - link "RSS Feed" [ref=e205] [cursor=pointer]:
+              - /url: https://www.net-empregos.com/rssfeed.asp
+    - generic [ref=e208]:
+      - paragraph [ref=e210]:
+        - text: "2026"
+        - link "Net-Empregos | Cenário Virtual Lda" [ref=e211] [cursor=pointer]:
+          - /url: "#"
+      - list [ref=e213]:
+        - listitem [ref=e214]:
+          - link "" [ref=e215] [cursor=pointer]:
+            - /url: https://www.facebook.com/netempregos
+            - generic [ref=e216]: 
+        - listitem [ref=e217]:
+          - link "" [ref=e218] [cursor=pointer]:
+            - /url: https://twitter.com/netempregos
+            - generic [ref=e219]: 
+        - listitem [ref=e220]:
+          - link "" [ref=e221] [cursor=pointer]:
+            - /url: https://www.linkedin.com/company/net-empregos
+            - generic [ref=e222]: 
+        - listitem [ref=e223]:
+          - link "" [ref=e224] [cursor=pointer]:
+            - /url: https://www.net-empregos.com/rssfeed.asp
+            - generic [ref=e225]: 
+  - text: 
+  - iframe [ref=e226]:
+    

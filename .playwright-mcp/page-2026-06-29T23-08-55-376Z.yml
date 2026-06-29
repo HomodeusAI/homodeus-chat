@@ -1,0 +1,202 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - link "Ir para conteúdo principal" [ref=e4] [cursor=pointer]:
+      - /url: "#pesquisarofertas"
+    - banner [ref=e6]:
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - generic [ref=e10]:
+            - button "Fazer Login" [ref=e11] [cursor=pointer]
+            - link "Esqueceu-se da password?" [ref=e12] [cursor=pointer]:
+              - /url: https://www.sgu.gov.pt/v3/login.aspx?action=recuperarPassword&retorno=aHR0cHM6Ly93d3cuYmVwLmdvdi5wdC9EZWZhdWx0LmFzcHg=
+          - button "Criar registo" [ref=e13] [cursor=pointer]
+          - link "Registar Organismo" [ref=e14] [cursor=pointer]:
+            - /url: javascript:__doPostBack('ctl00$ctl00$lnkRegistarOrg','')
+        - generic:
+          - link "Logotipo BEP":
+            - /url: ../../Default.aspx
+            - img "Logotipo BEP" [ref=e15] [cursor=pointer]
+      - navigation [ref=e16]:
+        - list [ref=e18]:
+          - listitem [ref=e19]:
+            - link "Ofertas" [ref=e20] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - listitem [ref=e21]:
+            - link "Conta do Utilizador" [ref=e22] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - listitem [ref=e23]:
+            - link "Programa de incentivos ao interior" [ref=e24] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - listitem [ref=e25]:
+            - link "Ofertas PRR" [ref=e26] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - listitem [ref=e27]:
+            - link "Sobre a BEP" [ref=e28] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - listitem [ref=e29]:
+            - link "Ajuda" [ref=e30] [cursor=pointer]:
+              - /url: javascript:void(0)
+    - generic [ref=e32]:
+      - generic [ref=e34]:
+        - list [ref=e36]:
+          - listitem [ref=e37]:
+            - link "Início" [ref=e38] [cursor=pointer]:
+              - /url: ../../Default.aspx
+          - listitem [ref=e39]:
+            - text: ">"
+            - link "Ofertas" [ref=e40] [cursor=pointer]:
+              - /url: javascript:void(0);
+          - listitem [ref=e41]: ">Pesquisar Ofertas"
+        - text: Pesquisar Ofertas
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - generic [ref=e45]:
+            - generic [ref=e47]: "Introduza um termo para pesquisa:"
+            - generic [ref=e48]:
+              - textbox "Introduza um termo para pesquisa" [ref=e50]: teatro
+              - button "Pesquisar" [ref=e52] [cursor=pointer]
+            - generic [ref=e54]: "Ex: lisboa gestão segurança social"
+          - button "Pesquisa Avançada ➜" [ref=e56] [cursor=pointer]
+        - generic [ref=e57]:
+          - heading "Para ver o detalhe da oferta selecione o respectivo código." [level=4] [ref=e60]
+          - generic [ref=e61]:
+            - generic [ref=e62]: Página 1 de 1 - Nº Total de Registo(s):2
+            - generic [ref=e63]:
+              - text: "Nº de Registos:"
+              - combobox "Nº de Registos" [ref=e64]:
+                - option "10" [selected]
+                - option "25"
+                - option "50"
+          - table "GvOfertaGestao" [ref=e68]:
+            - rowgroup [ref=e69]:
+              - row "Código Tipo Oferta Vínculo Carreira Categoria Distrito Organismo Habilitações Literárias Data Limite" [ref=e70]:
+                - columnheader "Código" [ref=e71]:
+                  - link "Código" [ref=e72] [cursor=pointer]:
+                    - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$GvOfertaGestao','Sort$Codigo')
+                - columnheader "Tipo Oferta" [ref=e73]:
+                  - link "Tipo Oferta" [ref=e74] [cursor=pointer]:
+                    - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$GvOfertaGestao','Sort$TipoDesc')
+                - columnheader "Vínculo" [ref=e75]:
+                  - link "Vínculo" [ref=e76] [cursor=pointer]:
+                    - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$GvOfertaGestao','Sort$VinculoDesc')
+                - columnheader "Carreira" [ref=e77]:
+                  - link "Carreira" [ref=e78] [cursor=pointer]:
+                    - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$GvOfertaGestao','Sort$CarreiraDesc')
+                - columnheader "Categoria" [ref=e79]:
+                  - link "Categoria" [ref=e80] [cursor=pointer]:
+                    - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$GvOfertaGestao','Sort$CategoriaDesc')
+                - columnheader "Distrito" [ref=e81]:
+                  - link "Distrito" [ref=e82] [cursor=pointer]:
+                    - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$GvOfertaGestao','Sort$DistritoDesc')
+                - columnheader "Organismo" [ref=e83]:
+                  - link "Organismo" [ref=e84] [cursor=pointer]:
+                    - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$GvOfertaGestao','Sort$OrganismoDesc')
+                - columnheader "Habilitações Literárias" [ref=e85]:
+                  - link "Habilitações Literárias" [ref=e86] [cursor=pointer]:
+                    - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$GvOfertaGestao','Sort$HabilitacoesLiterariasDesc')
+                - columnheader "Data Limite" [ref=e87]:
+                  - link "Data Limite" [ref=e88] [cursor=pointer]:
+                    - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$GvOfertaGestao','Sort$DataLimiteCandidatura')
+            - rowgroup [ref=e89]:
+              - row "OE202606/1715 Procedimento Concursal Comum CTFP por tempo indeterminado Técnico Superior Técnico Superior Aveiro Câmara Municipal de Aveiro Licenciatura 2026-07-13" [ref=e90]:
+                - cell "OE202606/1715" [ref=e91]:
+                  - link "OE202606/1715" [ref=e92] [cursor=pointer]:
+                    - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$GvOfertaGestao$ctl02$btnDetalhes','')
+                - cell "Procedimento Concursal Comum" [ref=e93]
+                - cell "CTFP por tempo indeterminado" [ref=e94]
+                - cell "Técnico Superior" [ref=e95]
+                - cell "Técnico Superior" [ref=e96]
+                - cell "Aveiro" [ref=e97]
+                - cell "Câmara Municipal de Aveiro" [ref=e98]:
+                  - link "Câmara Municipal de Aveiro" [ref=e99] [cursor=pointer]:
+                    - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$GvOfertaGestao$ctl02$btnDetalhesOrganismo','')
+                - cell "Licenciatura" [ref=e100]
+                - cell "2026-07-13" [ref=e101]
+              - row "OE202606/0961 Procedimento Concursal Comum CTFP por tempo indeterminado Técnico Superior Técnico Superior Porto Agrupamento de Escolas n.º 1 de Gondomar (Escola Secundária de Gondomar - Sede) Licenciatura 2026-06-30" [ref=e102]:
+                - cell "OE202606/0961" [ref=e103]:
+                  - link "OE202606/0961" [ref=e104] [cursor=pointer]:
+                    - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$GvOfertaGestao$ctl03$btnDetalhes','')
+                - cell "Procedimento Concursal Comum" [ref=e105]
+                - cell "CTFP por tempo indeterminado" [ref=e106]
+                - cell "Técnico Superior" [ref=e107]
+                - cell "Técnico Superior" [ref=e108]
+                - cell "Porto" [ref=e109]
+                - cell "Agrupamento de Escolas n.º 1 de Gondomar (Escola Secundária de Gondomar - Sede)" [ref=e110]:
+                  - link "Agrupamento de Escolas n.º 1 de Gondomar (Escola Secundária de Gondomar - Sede)" [ref=e111] [cursor=pointer]:
+                    - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$GvOfertaGestao$ctl03$btnDetalhesOrganismo','')
+                - cell "Licenciatura" [ref=e112]
+                - cell "2026-06-30" [ref=e113]
+        - generic [ref=e114]:
+          - link " Voltar" [ref=e116] [cursor=pointer]:
+            - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$ucVoltar','')
+            - generic [ref=e117]: 
+            - text: Voltar
+          - generic [ref=e118]:
+            - link "Imprimir" [ref=e119] [cursor=pointer]:
+              - /url: javascript:window.print()
+            - link " Voltar ao topo" [ref=e120] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e121]: 
+              - text: Voltar ao topo
+  - contentinfo [ref=e123]:
+    - generic [ref=e127]:
+      - link "Logo Governo de Portugal" [ref=e130] [cursor=pointer]:
+        - /url: http://www.portugal.gov.pt/pt.aspx
+        - img "Logo Governo de Portugal" [ref=e131]
+      - generic [ref=e133]:
+        - generic [ref=e134]: Entidade gestora
+        - link "Logo INA" [ref=e135] [cursor=pointer]:
+          - /url: http://www.dgaep.gov.pt/
+          - img "Logo INA" [ref=e136]
+      - generic [ref=e138]:
+        - generic [ref=e139]: Desenvolvimento e apoio técnico
+        - link "Logo ESPAP" [ref=e140] [cursor=pointer]:
+          - /url: http://www.espap.gov.pt/
+          - img "Logo ESPAP" [ref=e141]
+    - generic [ref=e143]:
+      - generic [ref=e144]:
+        - generic [ref=e145]:
+          - generic [ref=e146]: Ofertas
+          - link "Pesquisar Oferta" [ref=e147] [cursor=pointer]:
+            - /url: Oferta_Pesquisa_basica.aspx
+          - link "Pesquisar Resultados" [ref=e148] [cursor=pointer]:
+            - /url: Pesquisa_Resultados.aspx
+          - link "Listar Oferta Dirigentes Superiores" [ref=e149] [cursor=pointer]:
+            - /url: ../CReSAP/CReSAP_Pesquisa.aspx
+          - link "Formulários" [ref=e150] [cursor=pointer]:
+            - /url: javascript:__doPostBack('ctl00$ctl00$lnkbtnformulario','')
+        - generic [ref=e151]:
+          - generic [ref=e152]: Bolsa de Emprego Público
+          - link "Diploma" [ref=e153] [cursor=pointer]:
+            - /url: ../SobreBep/Diploma.aspx
+          - link "Objetivos" [ref=e154] [cursor=pointer]:
+            - /url: ../SobreBep/Objectivos.aspx
+          - link "Funcionalidades" [ref=e155] [cursor=pointer]:
+            - /url: ../SobreBep/Funcionalidades.aspx
+          - link "Acessibilidade" [ref=e156] [cursor=pointer]:
+            - /url: ../Acessibilidade.aspx
+          - link "Entidade Gestora" [ref=e157] [cursor=pointer]:
+            - /url: ../SobreBep/EntidadeGestora.aspx
+        - generic [ref=e158]:
+          - generic [ref=e159]: Links Úteis
+          - link "Oportunidades na UE" [ref=e160] [cursor=pointer]:
+            - /url: javascript:void(0);
+          - link "Eures" [ref=e161] [cursor=pointer]:
+            - /url: https://eures.europa.eu/jobseekers_pt
+          - link "EPSO" [ref=e162] [cursor=pointer]:
+            - /url: https://eu-careers.europa.eu/en/about-epso
+          - link "Carreiras Internacionais" [ref=e163] [cursor=pointer]:
+            - /url: http://www.carreirasinternacionais.eu
+          - link "Instituto Diplomático" [ref=e164] [cursor=pointer]:
+            - /url: https://idi.mne.gov.pt/pt/oportunidades/carreiras-internacionais
+          - link "EUROCID" [ref=e165] [cursor=pointer]:
+            - /url: https://eurocid.mne.gov.pt/empregos
+          - link "Org. Int. do Trabalho" [ref=e166] [cursor=pointer]:
+            - /url: https://www.ilo.org/lisbon/lang--pt/index.htm
+          - link "OCDE" [ref=e167] [cursor=pointer]:
+            - /url: http://www.oecd.org/careers/
+          - link "Netemprego (IEFP)" [ref=e168] [cursor=pointer]:
+            - /url: https://iefponline.iefp.pt/IEFP/pesquisas/search.do?cat=ofertaEmprego
+      - generic [ref=e170]:
+        - generic [ref=e171]: Presidência do Conselho de Ministros
+        - generic [ref=e172]: BEP v5.0.1.5 de 2025-12-03 @ 266

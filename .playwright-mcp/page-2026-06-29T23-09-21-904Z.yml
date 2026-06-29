@@ -1,0 +1,309 @@
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#gnav-header-end"
+  - main [ref=e3]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - dialog "Privacidade" [ref=e8]:
+          - generic [ref=e10]:
+            - generic [ref=e13]: O Indeed pode armazenar ou recuperar informações em seu navegador, principalmente na forma de cookies. Os cookies são arquivos de texto que um site transfere para o disco rígido ou outro equipamento de navegação em sites de uma pessoa para fins de manutenção de registros. Os cookies permitem que o Indeed guarde informações importantes que tornarão mais prática a sua utilização do site, além de proporcionar uma experiência mais personalizada. Se houver uma opção de ativação, ao mover o seletor para a direita, você permitirá o uso desses cookies.
+            - generic [ref=e15]:
+              - button "Definições de cookies, Abre a caixa de diálogo do centro de preferências" [ref=e16] [cursor=pointer]: Definições de cookies
+              - button "Recusar tudo" [ref=e17] [cursor=pointer]
+              - button "Aceitar todos os cookies" [ref=e18] [cursor=pointer]
+        - navigation "Principal" [ref=e19]:
+          - generic [ref=e21]:
+            - generic [ref=e22]:
+              - generic [ref=e23]:
+                - button "Avançar para o conteúdo principal" [ref=e24] [cursor=pointer]:
+                  - generic [ref=e25]: Avançar para o conteúdo principal
+                - link "Página inicial do Indeed" [ref=e26] [cursor=pointer]:
+                  - /url: /?from=gnav-jobsearch--indeedmobile
+                  - img [ref=e28]
+                - list [ref=e30]:
+                  - listitem [ref=e31]:
+                    - link "Página inicial" [ref=e33] [cursor=pointer]:
+                      - /url: https://pt.indeed.com/
+                  - listitem [ref=e34]:
+                    - link "Avaliações de Empresas" [ref=e36] [cursor=pointer]:
+                      - /url: https://pt.indeed.com/companies
+                  - listitem [ref=e37]:
+                    - link "Procurar Salários" [ref=e39] [cursor=pointer]:
+                      - /url: https://pt.indeed.com/career/salaries
+              - generic [ref=e40]:
+                - list [ref=e41]:
+                  - listitem [ref=e42]:
+                    - link "Iniciar sessão" [ref=e45] [cursor=pointer]:
+                      - /url: https://secure.indeed.com/auth?hl=pt_PT&co=PT&continue=https%3A%2F%2Fpt.indeed.com%2Fjobs%3Fq%3Dprodu%25C3%25A7%25C3%25A3o%2Bcultural%26l%3DPortugal%26fromage%3D14&tmpl=desktop&from=gnav-util-jobsearch--indeedmobile&jsContinue=https%3A%2F%2Fonboarding.indeed.com%2Fonboarding%3Fhl%3Dpt_PT%26co%3DPT%26from%3Dgnav-jobsearch--indeedmobile&empContinue=https%3A%2F%2Faccount.indeed.com%2Fmyaccess
+                - link "Empresas / Publique Ofertas" [ref=e50] [cursor=pointer]:
+                  - /url: https://pt.indeed.com/hire?co=PT&hl=pt
+            - generic [ref=e51]: Início do conteúdo principal
+      - generic [ref=e53]:
+        - search [ref=e58]:
+          - generic [ref=e61]:
+            - generic [ref=e63]:
+              - generic [ref=e64]:
+                - generic [ref=e65]: "Keyword : all jobs"
+                - generic [ref=e68]:
+                  - img [ref=e70]
+                  - 'combobox "search: Job title, keywords, or company" [ref=e72]': produção cultural
+                  - button "Clear what input" [ref=e74] [cursor=pointer]:
+                    - img [ref=e75]
+              - separator [ref=e77]:
+                - generic [ref=e78]: "&nbsp;"
+              - generic [ref=e79]:
+                - generic [ref=e80]: Edit location input box label
+                - generic [ref=e83]:
+                  - img [ref=e85]
+                  - combobox "Editar local" [ref=e87]: Portugal
+                  - button "Clear location input" [ref=e89] [cursor=pointer]:
+                    - img [ref=e90]
+            - button "Pesquisar Ofertas" [ref=e93] [cursor=pointer]
+          - list [ref=e96]:
+            - button "filtro Tipo de Oferta" [ref=e98] [cursor=pointer]: Tipo de Oferta
+            - button "filtro Idioma da oferta" [ref=e100] [cursor=pointer]: Idioma da oferta
+            - button "filtro Data do anúncio 1" [ref=e102] [cursor=pointer]:
+              - text: Data do anúncio
+              - generic [ref=e103]: "1"
+        - generic [ref=e109]:
+          - generic [ref=e110]:
+            - generic [ref=e111]:
+              - link "Registe o seu currículo" [ref=e112] [cursor=pointer]:
+                - /url: /promo/resume?from=serptop3&subfrom=resprmrtop&trk.origin=jobsearch&trk.variant=resprmrtop&trk.tk=1jsaq9rtfhbep800
+              - text: "- É grátis e leva apenas alguns minutos!"
+              - separator [ref=e113]:
+                - generic [ref=e114]: "&nbsp;"
+            - generic [ref=e115]:
+              - generic [ref=e116]:
+                - 'heading "ofertas de emprego: produção cultural - Portugal" [level=1] [ref=e117]'
+                - button "More information about job results" [ref=e120] [cursor=pointer]:
+                  - img "More information about job results" [ref=e121]
+              - generic [ref=e125]:
+                - generic [ref=e126]: "Ordenar por:"
+                - generic [ref=e127]:
+                  - text: relevância -
+                  - 'link "Ordenar por: data" [ref=e128] [cursor=pointer]':
+                    - /url: /jobs?q=produ%C3%A7%C3%A3o%20cultural&l=Portugal&fromage=14&sort=date
+                    - text: data
+            - list [ref=e132]:
+              - listitem
+              - listitem [ref=e133]:
+                - generic [ref=e135]:
+                  - generic:
+                    - generic [ref=e138]:
+                      - generic [ref=e139]:
+                        - heading "informações completas da oferta de A QUIC recruta Técnicos de Cena" [level=3] [ref=e140]:
+                          - button "informações completas da oferta de A QUIC recruta Técnicos de Cena" [pressed] [ref=e141] [cursor=pointer]: A QUIC recruta Técnicos de Cena
+                        - generic [ref=e146]: Candidate-se facilmente
+                      - generic [ref=e147]:
+                        - generic [ref=e149]:
+                          - generic [ref=e151]: Quick Deductions
+                          - generic [ref=e152]: Lisboa
+                        - list [ref=e154]:
+                          - listitem [ref=e155]:
+                            - generic [ref=e158]: Integral/Full-time
+                      - button "Save job Toggle" [ref=e162] [cursor=pointer]:
+                        - img [ref=e163]
+                    - generic [ref=e165]:
+                      - list [ref=e167]:
+                        - listitem [ref=e168]: Integração em projetos culturais de referência;
+                        - listitem [ref=e169]: Experiência em funções de técnico de cena (preferencial);
+                        - listitem [ref=e170]: Garantir o cumprimento das normas de segurança em…
+                      - list [ref=e174]:
+                        - listitem [ref=e175]:
+                          - generic [ref=e176]:
+                            - text: Ver todas as
+                            - link "Ofertas de emprego de Quick Deductions" [ref=e177] [cursor=pointer]:
+                              - /url: /q-quick-deductions-ofertas.html
+                            - text: –
+                            - link "ofertas para Lisboa" [ref=e178] [cursor=pointer]:
+                              - /url: /l-lisboa-ofertas.html
+                            - text: –
+                            - link "Ofertas de emprego de Recrutador em Lisboa" [ref=e179] [cursor=pointer]:
+                              - /url: /q-recrutador-l-lisboa-ofertas.html
+                        - listitem [ref=e180]:
+                          - generic [ref=e181]:
+                            - text: "Pesquisa por salário:"
+                            - link "salários de A QUIC recruta Técnicos de Cena - Lisboa" [ref=e182] [cursor=pointer]:
+                              - /url: /career/recrutador/salaries/Lisboa?campaignid=serp-more&fromjk=6bdc052ed18fed41&from=serp-more
+              - listitem
+            - group "No geral, qual a relevância dessas vagas?" [ref=e192]:
+              - generic [ref=e193]: No geral, qual a relevância dessas vagas?
+              - generic [ref=e194]:
+                - generic [ref=e196]:
+                  - radio [ref=e197] [cursor=pointer]
+                  - img [ref=e200]
+                  - generic [ref=e203]: Nenhuma
+                - generic [ref=e205]:
+                  - radio [ref=e206] [cursor=pointer]
+                  - img [ref=e209]
+                  - generic [ref=e212]: Ligeiramente
+                - generic [ref=e214]:
+                  - radio [ref=e215] [cursor=pointer]
+                  - img [ref=e218]
+                  - generic [ref=e221]: Relativa
+                - generic [ref=e223]:
+                  - radio [ref=e224] [cursor=pointer]
+                  - img [ref=e227]
+                  - generic [ref=e230]: Muito
+                - generic [ref=e232]:
+                  - radio [ref=e233] [cursor=pointer]
+                  - img [ref=e236]
+                  - generic [ref=e239]: Enorme
+            - navigation "pagination" [ref=e240]:
+              - list
+            - generic [ref=e245]:
+              - generic [ref=e246]:
+                - generic [ref=e248]:
+                  - text: Receba atualizações por e-mail sobre as ofertas mais recentes de
+                  - strong [ref=e249]: produção cultural
+                  - text: em
+                  - strong [ref=e250]: Portugal
+                - generic [ref=e251] [cursor=pointer]:
+                  - switch "Receba atualizações por e-mail sobre as ofertas mais recentes de produção cultural em Portugal" [ref=e252]
+                  - img [ref=e255]
+              - paragraph [ref=e258]:
+                - text: Ao criar um alerta de ofertas, aceita os nossos
+                - link "Terms (abre num novo separador)" [ref=e259] [cursor=pointer]:
+                  - /url: /legal?hl=pt
+                  - text: Termos
+                  - img [ref=e260]
+                - text: . Pode alterar as definições de consentimento em qualquer momento ao cancelar a receção ou conforme detalhado nos nossos termos.
+            - generic [ref=e263]:
+              - heading "Outras pessoas também pesquisaram:" [level=3] [ref=e264]
+              - list [ref=e265]:
+                - listitem [ref=e266]:
+                  - link "qualidade" [ref=e267] [cursor=pointer]:
+                    - /url: /q-qualidade-ofertas.html
+                    - generic [ref=e269]: qualidade
+                - listitem [ref=e270]:
+                  - link "gestão cultural" [ref=e271] [cursor=pointer]:
+                    - /url: /q-gest%c3%a3o-cultural-ofertas.html
+                    - generic [ref=e273]: gestão cultural
+                - listitem [ref=e274]:
+                  - link "história da arte" [ref=e275] [cursor=pointer]:
+                    - /url: /q-hist%c3%b3ria-da-arte-ofertas.html
+                    - generic [ref=e277]: história da arte
+                - listitem [ref=e278]:
+                  - link "livraria, part time" [ref=e279] [cursor=pointer]:
+                    - /url: /q-livraria,-part-time-ofertas.html
+                    - generic [ref=e281]: livraria, part time
+                - listitem [ref=e282]:
+                  - link "museus" [ref=e283] [cursor=pointer]:
+                    - /url: /q-museus-ofertas.html
+                    - generic [ref=e285]: museus
+          - generic "Job Post Details" [ref=e287]:
+            - button "Return to Search Result" [ref=e288]
+            - heading "Job Post Details" [level=2] [ref=e289]
+            - generic [ref=e293]:
+              - generic [ref=e295]:
+                - generic [ref=e296]:
+                  - heading "A QUIC recruta Técnicos de Cena - job post" [level=2] [ref=e298]:
+                    - generic [ref=e299]:
+                      - text: A QUIC recruta Técnicos de Cena
+                      - generic [ref=e300]: "- job post"
+                  - generic [ref=e304]:
+                    - link "Quick Deductions (abre num novo separador)" [ref=e308] [cursor=pointer]:
+                      - /url: https://pt.indeed.com/cmp/Quick-Deductions?campaignid=mobvjcmp&from=mobviewjob&tk=1jsaq9s1thbep803&fromjk=6bdc052ed18fed41
+                      - text: Quick Deductions
+                      - img [ref=e309]
+                    - generic [ref=e312]: Lisboa
+                - generic [ref=e314]:
+                  - button "Candidate-se com o Indeed opens in a new tab" [ref=e322] [cursor=pointer]:
+                    - generic [ref=e324]: Candidate-se com o Indeed
+                  - button "Guardar oferta" [ref=e328] [cursor=pointer]:
+                    - img "ícone-guardar" [ref=e329]
+                  - button "Partilhar Oferta" [ref=e331] [cursor=pointer]
+              - generic [ref=e334]:
+                - generic [ref=e335]:
+                  - generic [ref=e341]:
+                    - generic [ref=e342]:
+                      - heading "Dados da oferta" [level=2] [ref=e344]
+                      - group "Tipo de oferta" [ref=e346]:
+                        - img [ref=e347]
+                        - generic [ref=e350]:
+                          - heading "Tipo de oferta" [level=3] [ref=e351]
+                          - list [ref=e353]:
+                            - listitem [ref=e354]:
+                              - generic [ref=e359]: Integral/Full-time
+                    - separator [ref=e360]:
+                      - generic [ref=e361]: "&nbsp;"
+                  - generic [ref=e362]:
+                    - heading "Localização" [level=2] [ref=e363]
+                    - generic [ref=e364]:
+                      - img [ref=e365]
+                      - generic [ref=e368]: Lisboa
+                    - separator [ref=e369]:
+                      - generic [ref=e370]: "&nbsp;"
+                  - heading "Descrição Completa da Oferta" [level=2] [ref=e372]
+                  - generic [ref=e373]:
+                    - paragraph [ref=e374]: Se és organizado (a), pró-ativo (a) e tens uma grande paixão pela área de eventos, não deixes de te candidatar! Estamos à procura de uma pessoa talentosa e comprometida para se juntar à nossa equipa. Se desejas destacar-te num ambiente estimulante e tens uma grande paixão pela indústria do entretenimento, esta é a oportunidade perfeita para ti!
+                    - paragraph [ref=e375]: A QUIC resulta de um modelo inovador, transversal e multidirecional de criar e desenvolver serviços e projetos para a indústria do entretenimento, com forte componente de inovação para um mercado global.
+                    - paragraph [ref=e376]: "No âmbito do nosso serviço de Técnicos de Cena, procuramos candidatos com o seguinte perfil para integrar a nossa equipa:"
+                    - paragraph [ref=e377]: "Perfil do Candidato:"
+                    - list [ref=e378]:
+                      - listitem [ref=e379]: Experiência em funções de técnico de cena (preferencial);
+                      - listitem [ref=e380]: Conhecimentos de montagem de palco e produção de espetáculos;
+                      - listitem [ref=e381]: Sentido de responsabilidade, dinamismo e capacidade de trabalho em equipa;
+                      - listitem [ref=e382]: Disponibilidade para horários rotativos, incluindo noites e fins de semana;
+                      - listitem [ref=e383]: Residência na zona de Sintra ou arredores (preferencial).
+                    - paragraph [ref=e384]: "Conhecimentos técnicos:"
+                    - list [ref=e385]:
+                      - listitem [ref=e386]: Montagem e desmontagem de cenários;
+                      - listitem [ref=e387]: Apoio técnico a espetáculos, ensaios e eventos;
+                      - listitem [ref=e388]: Manuseamento e transporte de equipamentos de palco;
+                      - listitem [ref=e389]: Operação de maquinaria de cena e apoio às equipas de luz e som;
+                      - listitem [ref=e390]: Garantir o cumprimento das normas de segurança em palco.
+                    - paragraph [ref=e391]: "Oferta:"
+                    - list [ref=e392]:
+                      - listitem [ref=e393]: Integração em projetos culturais de referência;
+                      - listitem [ref=e394]: Formação contínua;
+                      - listitem [ref=e395]: Possibilidade de integração em equipa estável;
+                      - listitem [ref=e396]: Remuneração compatível com a experiência demonstrada.
+                    - paragraph [ref=e397]: "Envia já a tua candidatura para o email: hr@quic.pt com a referência “Técnico de Cena” no assunto."
+                    - paragraph [ref=e398]: "Tipo de oferta: Integral/Full-time"
+                    - paragraph [ref=e399]: "Localização do trabalho: Presencial"
+                  - separator [ref=e400]:
+                    - generic [ref=e401]: "&nbsp;"
+                - button "Denunciar anúncio" [ref=e408] [cursor=pointer]: Denunciar anúncio
+            - button "Return to Search Result" [ref=e410]
+      - contentinfo [ref=e415]:
+        - generic [ref=e416]:
+          - list [ref=e417]:
+            - listitem [ref=e418]:
+              - link "Pesquisar ofertas" [ref=e420] [cursor=pointer]:
+                - /url: https://pt.indeed.com/browsejobs
+            - listitem [ref=e421]:
+              - link "Salários" [ref=e423] [cursor=pointer]:
+                - /url: https://pt.indeed.com/career/salaries
+            - listitem [ref=e424]:
+              - link "Países" [ref=e426] [cursor=pointer]:
+                - /url: https://pt.indeed.com/worldwide
+            - listitem [ref=e427]:
+              - link "Acerca do Indeed" [ref=e429] [cursor=pointer]:
+                - /url: https://pt.indeed.com/about
+            - listitem [ref=e430]:
+              - link "Ajuda" [ref=e432] [cursor=pointer]:
+                - /url: https://pt.indeed.com/help/job-seekers?hl=pt&co=pt
+          - list [ref=e433]:
+            - listitem [ref=e434]: © 2026 Indeed
+            - listitem [ref=e435]:
+              - link "Acessibilidade no Indeed" [ref=e437] [cursor=pointer]:
+                - /url: https://pt.indeed.com/esg/accessibility?hl=pt
+            - listitem [ref=e438]:
+              - link "Centro de Privacidade e Escolhas de Anúncios" [ref=e440] [cursor=pointer]:
+                - /url: https://hrtechprivacy.com/pt/brands/indeed#privacypolicy
+            - listitem [ref=e441]:
+              - link "Denúncias RSD" [ref=e443] [cursor=pointer]:
+                - /url: https://dsa-reporting-and-appeals.indeed.com/
+            - listitem [ref=e444]:
+              - link "Página sobre Segurança Online" [ref=e446] [cursor=pointer]:
+                - /url: https://pt.indeed.com/legal/online-safety-page
+            - listitem [ref=e447]:
+              - link "Cookies" [ref=e449] [cursor=pointer]:
+                - /url: https://pt.indeed.com/legal/cookies?hl=pt&showOneTrustModal=true
+            - listitem [ref=e450]:
+              - link "Termos" [ref=e452] [cursor=pointer]:
+                - /url: https://pt.indeed.com/legal?hl=pt
+          - list:
+            - listitem

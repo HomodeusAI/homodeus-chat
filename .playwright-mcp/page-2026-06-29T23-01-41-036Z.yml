@@ -1,0 +1,388 @@
+- generic [ref=e1]:
+  - link [ref=e2] [cursor=pointer]: Skip to main content
+  - link [ref=e3] [cursor=pointer]:
+    - /url: https://support.google.com/websearch/answer/181196?hl=en-PT
+    - text: Accessibility help
+  - dialog "Before you continue to Google Search" [active]:
+    - generic [ref=e10]:
+      - generic [ref=e12]:
+        - img "Google" [ref=e13]
+        - generic [ref=e14]:
+          - 'button "Language: ‪English‬" [ref=e16] [cursor=pointer]':
+            - generic [ref=e17]:
+              - img
+              - generic [ref=e18]: en
+          - link "Sign in" [ref=e19] [cursor=pointer]
+      - generic [ref=e20]:
+        - heading "Before you continue to Google" [level=1] [ref=e21]
+        - generic [ref=e22]:
+          - generic [ref=e23]:
+            - text: We use
+            - link "cookies" [ref=e24] [cursor=pointer]:
+              - /url: https://policies.google.com/technologies/cookies?utm_source=ucbs&hl=en-PT
+            - text: and data to
+            - list [ref=e25]:
+              - listitem [ref=e26]: Deliver and maintain Google services
+              - listitem [ref=e27]: Track outages and protect against spam, fraud and abuse
+              - listitem [ref=e28]: Measure audience engagement and site statistics to understand how our services are used and enhance the quality of those services
+          - generic [ref=e29]:
+            - text: If you choose to 'Accept all', we will also use cookies and data to
+            - list [ref=e30]:
+              - listitem [ref=e31]: Develop and improve new services
+              - listitem [ref=e32]: Deliver and measure the effectiveness of ads
+              - listitem [ref=e33]: Show personalised content, depending on your settings
+              - listitem [ref=e34]: Show personalised ads, depending on your settings
+            - generic [ref=e35]: If you choose to 'Reject all', we will not use cookies for these additional purposes.
+          - generic [ref=e36]: Non-personalised content is influenced by things like the content that you’re currently viewing, activity in your active Search session, and your location. Non-personalised ads are influenced by the content that you’re currently viewing and your general location. Personalised content and ads can also include more relevant results, recommendations and tailored ads based on past activity from this browser, like previous Google searches. We also use cookies and data to tailor the experience to be age-appropriate, if relevant.
+          - generic [ref=e37]: Select 'More options' to see additional information, including details about managing your privacy settings. You can also visit g.co/privacytools at any time.
+      - generic [ref=e38]:
+        - generic [ref=e39]:
+          - button "Reject all" [ref=e40] [cursor=pointer]
+          - button "Accept all" [ref=e41] [cursor=pointer]
+        - link "More options for personalisation settings and cookies" [ref=e43] [cursor=pointer]:
+          - generic "More options for personalisation settings and cookies" [ref=e44]: More options
+      - generic [ref=e45]:
+        - link "Privacy" [ref=e46] [cursor=pointer]:
+          - /url: https://policies.google.com/privacy?hl=en-PT&fg=1&utm_source=ucbs
+        - generic [ref=e47]: ·
+        - link "Terms" [ref=e48] [cursor=pointer]:
+          - /url: https://policies.google.com/terms?hl=en-PT&fg=1&utm_source=ucbs
+  - generic [ref=e53]:
+    - search [ref=e54]:
+      - generic [ref=e56]:
+        - generic:
+          - generic:
+            - generic:
+              - img
+        - link [ref=e58] [cursor=pointer]:
+          - /url: https://www.google.com/webhp?hl=en&ictx=2&sa=X&ved=0ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQPQhr
+          - img [ref=e59]
+        - generic [ref=e60]:
+          - generic [ref=e61]:
+            - combobox [ref=e64]: site:net-empregos.com Rececionista Lisboa emprego eventos site:net-empregos.com Rececionista Lisboa emprego eventos
+            - generic [ref=e65]:
+              - button [ref=e67] [cursor=pointer]:
+                - img [ref=e69]
+              - generic [ref=e72]:
+                - button [ref=e73] [cursor=pointer]:
+                  - img [ref=e74]
+                - button [ref=e76] [cursor=pointer]:
+                  - img [ref=e77]
+          - button [ref=e79] [cursor=pointer]:
+            - img [ref=e82]
+    - generic [ref=e84]:
+      - button [ref=e86] [cursor=pointer]
+      - button [ref=e87] [cursor=pointer]:
+        - img [ref=e91]
+      - generic [ref=e93]:
+        - button [ref=e95] [cursor=pointer]:
+          - img [ref=e96]
+        - link [ref=e100] [cursor=pointer]:
+          - /url: https://accounts.google.com/ServiceLogin?hl=en&passive=true&continue=https://www.google.com/search%3Fq%3Dsite%253Anet-empregos.com%2BRececionista%2BLisboa%2Bemprego%2Beventos%26sei%3DU_lCarjfMMCN9u8P65O3gA4&ec=futura_srp_og_si_72236_p
+          - text: Sign in
+  - generic [ref=e102]:
+    - navigation [ref=e108]:
+      - list [ref=e111]:
+        - listitem [ref=e112]:
+          - link [ref=e115] [cursor=pointer]:
+            - /url: /search?q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&sca_esv=e2a3d4919e6a9815&udm=50&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832cY0rzciwbWdjW1sV3VNzLxdnf7_4forAzXNHe3mB2aZ1FbTmhcd-Td5VUsYuYfIoL_xvcOQKBzSI39UDQG-ydpRJJg-Kv8yOG84Ko1VM0VTPa0_DIu3frGQTVLzTvTELE82sjI&aep=1&ntc=1&sa=X&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQ2J8OegQIDxAD
+            - generic [ref=e118]: AI Mode
+        - listitem [ref=e119]:
+          - link [disabled] [ref=e120]:
+            - generic [ref=e122]: All
+        - listitem [ref=e123]:
+          - link [ref=e124] [cursor=pointer]:
+            - /url: /search?sca_esv=e2a3d4919e6a9815&udm=2&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832cY0rzciwbWdjW1sV3VNzLxdnf7_4forAzXNHe3mB2aZ1FbTmhcd-Td5VUsYuYfIoL_xvcOQKBzSI39UDQG-ydpRJJg-Kv8yOG84Ko1VM0VTPa0_DIu3frGQTVLzTvTELE82sjI&q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&sa=X&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQtKgLegQIFBAB
+            - generic [ref=e126]: Images
+        - listitem [ref=e127]:
+          - link [ref=e128] [cursor=pointer]:
+            - /url: /search?sca_esv=e2a3d4919e6a9815&udm=39&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832cY0rzciwbWdjW1sV3VNzLxdnf7_4forAzXNHe3mB2aZ1FbTmhcd-Td5VUsYuYfIoL_xvcOQKBzSI39UDQG-ydpRJJg-Kv8yOG84Ko1VM0VTPa0_DIu3frGQTVLzTvTELE82sjI&q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&sa=X&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQs6gLegQIExAB
+            - generic [ref=e130]: Short videos
+        - listitem [ref=e131]:
+          - link [ref=e132] [cursor=pointer]:
+            - /url: /search?sca_esv=e2a3d4919e6a9815&q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&tbm=nws&source=lnms&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832cY0rzciwbWdjW1sV3VNzLxdnf7_4forAzXNHe3mB2aZ1FbTmhcd-Td5VUsYuYfIoL_xvcOQKBzSI39UDQG-ydpRJJg-Kv8yOG84Ko1VM0VTPa0_DIu3frGQTVLzTvTELE82sjI&sa=X&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQ0pQJegQIFRAB
+            - generic [ref=e134]: News
+        - listitem [ref=e135]:
+          - link [ref=e136] [cursor=pointer]:
+            - /url: /search?sca_esv=e2a3d4919e6a9815&udm=7&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832cY0rzciwbWdjW1sV3VNzLxdnf7_4forAzXNHe3mB2aZ1FbTmhcd-Td5VUsYuYfIoL_xvcOQKBzSI39UDQG-ydpRJJg-Kv8yOG84Ko1VM0VTPa0_DIu3frGQTVLzTvTELE82sjI&q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&sa=X&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQtKgLegQIEhAB
+            - generic [ref=e138]: Videos
+        - listitem [ref=e139]:
+          - link [ref=e140] [cursor=pointer]:
+            - /url: /search?sca_esv=e2a3d4919e6a9815&udm=web&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832cY0rzciwbWdjW1sV3VNzLxdnf7_4forAzXNHe3mB2aZ1FbTmhcd-Td5VUsYuYfIoL_xvcOQKBzSI39UDQG-ydpRJJg-Kv8yOG84Ko1VM0VTPa0_DIu3frGQTVLzTvTELE82sjI&q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&sa=X&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQs6gLegQIERAB
+            - generic [ref=e142]: Web
+        - listitem [ref=e143]:
+          - button [ref=e144] [cursor=pointer]:
+            - generic [ref=e146]:
+              - generic [ref=e147]: More
+              - img [ref=e149]
+    - heading [level=1] [ref=e151]: Search Results
+    - main [ref=e157]:
+      - generic [ref=e161]:
+        - generic [ref=e164]:
+          - heading [level=2] [ref=e165]: Resultados da Web
+          - generic [ref=e166]:
+            - generic [ref=e169]:
+              - link [ref=e171] [cursor=pointer]:
+                - /url: https://www.net-empregos.com/15599235/front-of-house-rececionista-experiencia-em-hotelaria-m-f-lisboa/
+                - heading [level=3] [ref=e172]: Front of House / Rececionista Experiência em Hotelaria (M/F)
+                - generic [ref=e178]:
+                  - generic [ref=e180]: Net-Empregos
+                  - generic [ref=e182]: https://www.net-empregos.com › f...
+              - generic [ref=e183]:
+                - generic [ref=e184]: ·
+                - link [ref=e185] [cursor=pointer]:
+                  - /url: https://translate.google.com/translate?u=https://www.net-empregos.com/15599235/front-of-house-rececionista-experiencia-em-hotelaria-m-f-lisboa/&hl=en&sl=pt&tl=en&client=search
+                  - text: Translate this page
+              - button [ref=e188] [cursor=pointer]:
+                - img [ref=e191]
+            - generic [ref=e194]:
+              - generic [ref=e195]: 5 days ago —
+              - generic [ref=e196]:
+                - text: Estamos a recrutar um(a)
+                - emphasis [ref=e197]: Rececionista
+                - text: / Front of House & Administrativo(a) para integrar uma empresa de referência do grupo MHMB, localizada no ...
+              - link [ref=e198] [cursor=pointer]:
+                - /url: https://www.net-empregos.com/15599235/front-of-house-rececionista-experiencia-em-hotelaria-m-f-lisboa/#:~:text=Estamos%20a%20recrutar%20um(a)%20Rececionista,localizada%20no%20centro%20de%20Lisboa.
+                - text: Read more
+        - generic [ref=e202]:
+          - generic [ref=e205]:
+            - link [ref=e207] [cursor=pointer]:
+              - /url: https://empresa.net-empregos.com/15313600/abertura-hotel-4-lisboa-alcantara-recepcionista-de-2-m-f/
+              - heading [level=3] [ref=e208]: Abertura Hotel 4* Lisboa - Alcântara Recepcionista de 2ª M/F
+              - generic [ref=e214]:
+                - generic [ref=e216]: Net-Empregos
+                - generic [ref=e218]: https://empresa.net-empregos.com › ...
+            - generic [ref=e219]:
+              - generic [ref=e220]: ·
+              - link [ref=e221] [cursor=pointer]:
+                - /url: https://translate.google.com/translate?u=https://empresa.net-empregos.com/15313600/abertura-hotel-4-lisboa-alcantara-recepcionista-de-2-m-f/&hl=en&sl=pt&tl=en&client=search
+                - text: Translate this page
+            - button [ref=e224] [cursor=pointer]:
+              - img [ref=e227]
+          - generic [ref=e230]:
+            - generic [ref=e231]: 6 days ago —
+            - generic [ref=e232]:
+              - text: "- Muito orientado(a) para o cliente; - Conhecimento da cidade de"
+              - emphasis [ref=e233]: Lisboa
+              - text: e
+              - emphasis [ref=e234]: eventos
+              - text: atuais; - Sentido de responsabilidade e proatividade; - ...
+            - link [ref=e235] [cursor=pointer]:
+              - /url: https://empresa.net-empregos.com/15313600/abertura-hotel-4-lisboa-alcantara-recepcionista-de-2-m-f/#:~:text=%2D%20Muito%20orientado(a)%20para%20o,%2D%20Apresenta%C3%A7%C3%A3o%20cuidada%3B
+              - text: Read more
+        - generic [ref=e239]:
+          - generic [ref=e242]:
+            - link [ref=e244] [cursor=pointer]:
+              - /url: https://www.net-empregos.com/organizacao-de-eventos/
+              - heading [level=3] [ref=e245]: Emprego Organizacao de Eventos - Junho 2026
+              - generic [ref=e251]:
+                - generic [ref=e253]: Net-Empregos
+                - generic [ref=e255]: https://www.net-empregos.com › ...
+            - generic [ref=e256]:
+              - generic [ref=e257]: ·
+              - link [ref=e258] [cursor=pointer]:
+                - /url: https://translate.google.com/translate?u=https://www.net-empregos.com/organizacao-de-eventos/&hl=en&sl=pt&tl=en&client=search
+                - text: Translate this page
+            - button [ref=e261] [cursor=pointer]:
+              - img [ref=e264]
+          - generic [ref=e267]:
+            - generic [ref=e268]:
+              - text: Responsável de Marketing e Comunicação Interna · Polivalente Receção · Estamos a recrutar um gerente de restaurante/ casa de
+              - emphasis [ref=e269]: Eventos
+              - text: Vila Nova de Famalicão.
+            - link [ref=e270] [cursor=pointer]:
+              - /url: https://www.net-empregos.com/organizacao-de-eventos/#:~:text=Respons%C3%A1vel%20de%20Marketing%20e%20Comunica%C3%A7%C3%A3o,Interna&text=Polivalente%20Rece%C3%A7%C3%A3o&text=Estamos%20a%20recrutar%20um%20gerente,Eventos%20Vila%20Nova%20de%20Famalic%C3%A3o
+              - text: Read more
+        - generic [ref=e274]:
+          - generic [ref=e277]:
+            - link [ref=e279] [cursor=pointer]:
+              - /url: https://www.net-empregos.com/pesquisa-empregos.asp?page=3&chaves=evento+lisboa
+              - heading [level=3] [ref=e280]: Emprego Evento Lisboa - Junho 2026 | 388 Ofertas
+              - generic [ref=e286]:
+                - generic [ref=e288]: Net-Empregos
+                - generic [ref=e290]: https://www.net-empregos.com › c...
+            - generic [ref=e291]:
+              - generic [ref=e292]: ·
+              - link [ref=e293] [cursor=pointer]:
+                - /url: https://translate.google.com/translate?u=https://www.net-empregos.com/pesquisa-empregos.asp?page%3D3%26chaves%3Devento%2Blisboa&hl=en&sl=pt&tl=en&client=search
+                - text: Translate this page
+            - button [ref=e296] [cursor=pointer]:
+              - img [ref=e299]
+          - generic [ref=e302]:
+            - generic [ref=e303]:
+              - text: ...
+              - emphasis [ref=e304]: Rececionista - HOSTEL Picoas, Lisboa - WOTELS
+              - text: · HUB SA. 25-6-2026; Lisboa; Hotelaria / Turismo; HUB SA. Ver Oferta · Cloud Engineer - Porto/Lisboa · Adentis. 25 ...
+            - link [ref=e305] [cursor=pointer]:
+              - /url: https://www.net-empregos.com/pesquisa-empregos.asp?page=3&chaves=evento+lisboa#:~:text=Rececionista%20%2D%20HOSTEL%20Picoas%2C%20Lisboa,25%2D6%2D2026
+              - text: Read more
+        - generic [ref=e309]:
+          - generic [ref=e312]:
+            - link [ref=e314] [cursor=pointer]:
+              - /url: https://www.net-empregos.com/15491004/administrativa-rececionista-lisboa-2-f-a-6-f-ref-119420/
+              - heading [level=3] [ref=e315]: "Administrativa / Rececionista Lisboa 2ªf a 6ªf - Ref: 119420"
+              - generic [ref=e321]:
+                - generic [ref=e323]: Net-Empregos
+                - generic [ref=e325]: https://www.net-empregos.com › a...
+            - generic [ref=e326]:
+              - generic [ref=e327]: ·
+              - link [ref=e328] [cursor=pointer]:
+                - /url: https://translate.google.com/translate?u=https://www.net-empregos.com/15491004/administrativa-rececionista-lisboa-2-f-a-6-f-ref-119420/&hl=en&sl=pt&tl=en&client=search
+                - text: Translate this page
+            - button [ref=e331] [cursor=pointer]:
+              - img [ref=e334]
+          - generic [ref=e337]:
+            - generic [ref=e338]: 28 May 2026 —
+            - generic [ref=e339]:
+              - text: "-"
+              - emphasis [ref=e340]: Gestão do front desk, salas de reunião e respetivos calendários
+              - text: . - Suporte à organização de reuniões, eventos internos e necessidades ...
+            - link [ref=e341] [cursor=pointer]:
+              - /url: https://www.net-empregos.com/15491004/administrativa-rececionista-lisboa-2-f-a-6-f-ref-119420/#:~:text=%2D%20Gest%C3%A3o%20do%20front%20desk%2C,eventos%20internos%20e%20necessidades%20log%C3%ADsticas.
+              - text: Read more
+        - generic [ref=e345]:
+          - generic [ref=e348]:
+            - link [ref=e350] [cursor=pointer]:
+              - /url: https://www.net-empregos.com/15591581/recepcionista-de-hotel/
+              - heading [level=3] [ref=e351]: Recepcionista de hotel - UNIPESSOAL LDA
+              - generic [ref=e357]:
+                - generic [ref=e359]: Net-Empregos
+                - generic [ref=e361]: https://www.net-empregos.com › r...
+            - generic [ref=e362]:
+              - generic [ref=e363]: ·
+              - link [ref=e364] [cursor=pointer]:
+                - /url: https://translate.google.com/translate?u=https://www.net-empregos.com/15591581/recepcionista-de-hotel/&hl=en&sl=pt&tl=en&client=search
+                - text: Translate this page
+            - button [ref=e367] [cursor=pointer]:
+              - img [ref=e370]
+          - generic [ref=e373]:
+            - generic [ref=e374]:
+              - emphasis [ref=e375]: Look Living está a recrutar Recepcionista de Hotel em Lisboa
+              - text: . Se tem experiência na área da recepção, é fluente em português e inglês, e procura um novo desafio ...
+            - link [ref=e376] [cursor=pointer]:
+              - /url: https://www.net-empregos.com/15591581/recepcionista-de-hotel/#:~:text=Look%20Living%20est%C3%A1%20a%20recrutar,esta%20oportunidade%20%C3%A9%20para%20si.
+              - text: Read more
+        - generic [ref=e380]:
+          - generic [ref=e383]:
+            - link [ref=e385] [cursor=pointer]:
+              - /url: https://www.net-empregos.com/organizacao-de-eventos-corporativos/
+              - heading [level=3] [ref=e386]: Emprego Organizacao de Eventos Corporativos
+              - generic [ref=e392]:
+                - generic [ref=e394]: Net-Empregos
+                - generic [ref=e396]: https://www.net-empregos.com › ...
+            - generic [ref=e397]:
+              - generic [ref=e398]: ·
+              - link [ref=e399] [cursor=pointer]:
+                - /url: https://translate.google.com/translate?u=https://www.net-empregos.com/organizacao-de-eventos-corporativos/&hl=en&sl=pt&tl=en&client=search
+                - text: Translate this page
+            - button [ref=e402] [cursor=pointer]:
+              - img [ref=e405]
+          - generic [ref=e408]:
+            - generic [ref=e409]:
+              - text: Chefe Serviço Newface (M/F) - Lisboa · STARFACE - SERVIÇOS DE GESTÃO S A. 25-6-2026; Lisboa ...
+              - emphasis [ref=e410]: Rececionista - Lisboa
+              - text: · Manpower Portugal. 24-6-2026; Lisboa
+            - link [ref=e411] [cursor=pointer]:
+              - /url: https://www.net-empregos.com/organizacao-de-eventos-corporativos/#:~:text=Chefe%20Servi%C3%A7o%20Newface%20(M%2FF)%20%2D,Lisboa&text=Rececionista%20%2D%20Lisboa,Lisboa
+              - text: Read more
+        - generic [ref=e415]:
+          - generic [ref=e418]:
+            - link [ref=e420] [cursor=pointer]:
+              - /url: https://publift.net-empregos.com/15265595/rececionista-m-f-grupo-mhmb-lisboa/
+              - heading [level=3] [ref=e421]: Rececionista (M/F)-Grupo MHMB-Lisboa
+              - generic [ref=e427]:
+                - generic [ref=e429]: Net-Empregos
+                - generic [ref=e431]: https://publift.net-empregos.com › ...
+            - generic [ref=e432]:
+              - generic [ref=e433]: ·
+              - link [ref=e434] [cursor=pointer]:
+                - /url: https://translate.google.com/translate?u=https://publift.net-empregos.com/15265595/rececionista-m-f-grupo-mhmb-lisboa/&hl=en&sl=pt&tl=en&client=search
+                - text: Translate this page
+            - button [ref=e437] [cursor=pointer]:
+              - img [ref=e440]
+          - generic [ref=e444]:
+            - text: "Descrição da oferta:"
+            - emphasis [ref=e445]: Estamos a recrutar um(a) Rececionista
+            - text: para integrar uma empresa do Grupo MHMB, de referência na área do golfe e lazer, localizada no ...
+        - generic [ref=e449]:
+          - generic [ref=e452]:
+            - link [ref=e454] [cursor=pointer]:
+              - /url: https://www.net-empregos.com/pesquisa-empregos.asp?page=4&chaves=apoio+logistico+eventos
+              - heading [level=3] [ref=e455]: Emprego Apoio Logistico Eventos - Junho 2026 | 85 Ofertas
+              - generic [ref=e461]:
+                - generic [ref=e463]: Net-Empregos
+                - generic [ref=e465]: https://www.net-empregos.com › c...
+            - generic [ref=e466]:
+              - generic [ref=e467]: ·
+              - link [ref=e468] [cursor=pointer]:
+                - /url: https://translate.google.com/translate?u=https://www.net-empregos.com/pesquisa-empregos.asp?page%3D4%26chaves%3Dapoio%2Blogistico%2Beventos&hl=en&sl=pt&tl=en&client=search
+                - text: Translate this page
+            - button [ref=e471] [cursor=pointer]:
+              - img [ref=e474]
+          - generic [ref=e477]:
+            - generic [ref=e478]:
+              - emphasis [ref=e479]: Estamos a recrutar um Recepcionista M/F
+              - text: "com o seguinte perfil: · Operador(a) de Armazém: Mobiliário - Sintra · Técnico(a) de Compras - Sintra · Gestor(a) de ..."
+            - link [ref=e480] [cursor=pointer]:
+              - /url: https://www.net-empregos.com/pesquisa-empregos.asp?page=4&chaves=apoio+logistico+eventos#:~:text=Estamos%20a%20recrutar%20um%20Recepcionista,M%2FF%20com%20o%20seguinte%20perfil%3A&text=Operador(a)%20de%20Armaz%C3%A9m%3A%20Mobili%C3%A1rio%20%2D,Sintra&text=T%C3%A9cnico(a)%20de%20Compras%20%2D%20Sintra&text=Gestor(a)%20de%20Planeamento%20de%20Equipas,e%20Tr%C3%A1fego%20%2D%20Sintra
+              - text: Read more
+        - generic [ref=e484]:
+          - generic [ref=e487]:
+            - link [ref=e489] [cursor=pointer]:
+              - /url: https://www.net-empregos.com/15468098/rececionista-fim-de-semana/
+              - heading [level=3] [ref=e490]: Rececionista | Fim-de-semana. - Grupo EGOR
+              - generic [ref=e496]:
+                - generic [ref=e498]: Net-Empregos
+                - generic [ref=e500]: https://www.net-empregos.com › r...
+            - generic [ref=e501]:
+              - generic [ref=e502]: ·
+              - link [ref=e503] [cursor=pointer]:
+                - /url: https://translate.google.com/translate?u=https://www.net-empregos.com/15468098/rececionista-fim-de-semana/&hl=en&sl=pt&tl=en&client=search
+                - text: Translate this page
+            - button [ref=e506] [cursor=pointer]:
+              - img [ref=e509]
+          - generic [ref=e512]:
+            - generic [ref=e513]: 25 May 2026 —
+            - generic [ref=e514]:
+              - text: A Synchro by EGOR encontra-se a recrutar
+              - emphasis [ref=e515]: Rececionista para o balcão de informações do shopping das Amoreiras
+              - text: em regime part-time. FUNÇÕES.
+            - link [ref=e516] [cursor=pointer]:
+              - /url: https://www.net-empregos.com/15468098/rececionista-fim-de-semana/#:~:text=A%20Synchro%20by%20EGOR%20encontra%2Dse,FUN%C3%87%C3%95ES
+              - text: Read more
+      - navigation [ref=e519]:
+        - heading [level=1] [ref=e520]: Page navigation
+        - text: "1"
+        - link [ref=e523] [cursor=pointer]:
+          - /url: /search?q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&sca_esv=e2a3d4919e6a9815&ei=U_lCaqn3OPmN9u8PzOrogAg&start=10&sa=N&sstk=AU9db-B2ItA1bEaQVSk0Zy-9qDE7xjphDzcyK12e_mT90E_y_CNcrhkNnp6kE88vRKJOx7JxyHi7xQ8DIqg9Vog35pqevaIRGPscLA&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQ8tMDegQIKxAE
+          - text: "2"
+        - link [ref=e525] [cursor=pointer]:
+          - /url: /search?q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&sca_esv=e2a3d4919e6a9815&ei=U_lCaqn3OPmN9u8PzOrogAg&start=20&sa=N&sstk=AU9db-B2ItA1bEaQVSk0Zy-9qDE7xjphDzcyK12e_mT90E_y_CNcrhkNnp6kE88vRKJOx7JxyHi7xQ8DIqg9Vog35pqevaIRGPscLA&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQ8tMDegQIKxAG
+          - text: "3"
+        - link [ref=e527] [cursor=pointer]:
+          - /url: /search?q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&sca_esv=e2a3d4919e6a9815&ei=U_lCaqn3OPmN9u8PzOrogAg&start=30&sa=N&sstk=AU9db-B2ItA1bEaQVSk0Zy-9qDE7xjphDzcyK12e_mT90E_y_CNcrhkNnp6kE88vRKJOx7JxyHi7xQ8DIqg9Vog35pqevaIRGPscLA&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQ8tMDegQIKxAI
+          - text: "4"
+        - link [ref=e529] [cursor=pointer]:
+          - /url: /search?q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&sca_esv=e2a3d4919e6a9815&ei=U_lCaqn3OPmN9u8PzOrogAg&start=40&sa=N&sstk=AU9db-B2ItA1bEaQVSk0Zy-9qDE7xjphDzcyK12e_mT90E_y_CNcrhkNnp6kE88vRKJOx7JxyHi7xQ8DIqg9Vog35pqevaIRGPscLA&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQ8tMDegQIKxAK
+          - text: "5"
+        - link [ref=e531] [cursor=pointer]:
+          - /url: /search?q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&sca_esv=e2a3d4919e6a9815&ei=U_lCaqn3OPmN9u8PzOrogAg&start=50&sa=N&sstk=AU9db-B2ItA1bEaQVSk0Zy-9qDE7xjphDzcyK12e_mT90E_y_CNcrhkNnp6kE88vRKJOx7JxyHi7xQ8DIqg9Vog35pqevaIRGPscLA&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQ8tMDegQIKxAM
+          - text: "6"
+        - link [ref=e533] [cursor=pointer]:
+          - /url: /search?q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&sca_esv=e2a3d4919e6a9815&ei=U_lCaqn3OPmN9u8PzOrogAg&start=60&sa=N&sstk=AU9db-B2ItA1bEaQVSk0Zy-9qDE7xjphDzcyK12e_mT90E_y_CNcrhkNnp6kE88vRKJOx7JxyHi7xQ8DIqg9Vog35pqevaIRGPscLA&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQ8tMDegQIKxAO
+          - text: "7"
+        - link [ref=e535] [cursor=pointer]:
+          - /url: /search?q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&sca_esv=e2a3d4919e6a9815&ei=U_lCaqn3OPmN9u8PzOrogAg&start=70&sa=N&sstk=AU9db-B2ItA1bEaQVSk0Zy-9qDE7xjphDzcyK12e_mT90E_y_CNcrhkNnp6kE88vRKJOx7JxyHi7xQ8DIqg9Vog35pqevaIRGPscLA&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQ8tMDegQIKxAQ
+          - text: "8"
+        - link [ref=e537] [cursor=pointer]:
+          - /url: /search?q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&sca_esv=e2a3d4919e6a9815&ei=U_lCaqn3OPmN9u8PzOrogAg&start=80&sa=N&sstk=AU9db-B2ItA1bEaQVSk0Zy-9qDE7xjphDzcyK12e_mT90E_y_CNcrhkNnp6kE88vRKJOx7JxyHi7xQ8DIqg9Vog35pqevaIRGPscLA&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQ8tMDegQIKxAS
+          - text: "9"
+        - link [ref=e539] [cursor=pointer]:
+          - /url: /search?q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&sca_esv=e2a3d4919e6a9815&ei=U_lCaqn3OPmN9u8PzOrogAg&start=90&sa=N&sstk=AU9db-B2ItA1bEaQVSk0Zy-9qDE7xjphDzcyK12e_mT90E_y_CNcrhkNnp6kE88vRKJOx7JxyHi7xQ8DIqg9Vog35pqevaIRGPscLA&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQ8tMDegQIKxAU
+          - text: "10"
+        - heading [level=2] [ref=e541]:
+          - link [ref=e542] [cursor=pointer]:
+            - /url: /search?q=site:net-empregos.com+Rececionista+Lisboa+emprego+eventos&sca_esv=e2a3d4919e6a9815&ei=U_lCaqn3OPmN9u8PzOrogAg&start=10&sa=N&sstk=AU9db-B2ItA1bEaQVSk0Zy-9qDE7xjphDzcyK12e_mT90E_y_CNcrhkNnp6kE88vRKJOx7JxyHi7xQ8DIqg9Vog35pqevaIRGPscLA&ved=2ahUKEwjp7MOHx62VAxX5hv0HHUw1GoAQ8NMDegQIKxAW
+            - generic [ref=e544]: Next
+    - contentinfo [ref=e545]:
+      - heading [level=1] [ref=e546]: Footer links

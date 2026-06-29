@@ -1,0 +1,133 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - link "Ir para conteúdo principal" [ref=e4] [cursor=pointer]:
+      - /url: "#pesquisarofertas"
+    - banner [ref=e6]:
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - generic [ref=e10]:
+            - button "Fazer Login" [ref=e11] [cursor=pointer]
+            - link "Esqueceu-se da password?" [ref=e12] [cursor=pointer]:
+              - /url: https://www.sgu.gov.pt/v3/login.aspx?action=recuperarPassword&retorno=aHR0cHM6Ly93d3cuYmVwLmdvdi5wdC9EZWZhdWx0LmFzcHg=
+          - button "Criar registo" [ref=e13] [cursor=pointer]
+          - link "Registar Organismo" [ref=e14] [cursor=pointer]:
+            - /url: javascript:__doPostBack('ctl00$ctl00$lnkRegistarOrg','')
+        - generic:
+          - link "Logotipo BEP":
+            - /url: ../../Default.aspx
+            - img "Logotipo BEP" [ref=e15] [cursor=pointer]
+      - navigation [ref=e16]:
+        - list [ref=e18]:
+          - listitem [ref=e19]:
+            - link "Ofertas" [ref=e20] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - listitem [ref=e21]:
+            - link "Conta do Utilizador" [ref=e22] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - listitem [ref=e23]:
+            - link "Programa de incentivos ao interior" [ref=e24] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - listitem [ref=e25]:
+            - link "Ofertas PRR" [ref=e26] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - listitem [ref=e27]:
+            - link "Sobre a BEP" [ref=e28] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - listitem [ref=e29]:
+            - link "Ajuda" [ref=e30] [cursor=pointer]:
+              - /url: javascript:void(0)
+    - generic [ref=e32]:
+      - generic [ref=e34]:
+        - list [ref=e36]:
+          - listitem [ref=e37]:
+            - link "Início" [ref=e38] [cursor=pointer]:
+              - /url: ../../Default.aspx
+          - listitem [ref=e39]:
+            - text: ">"
+            - link "Ofertas" [ref=e40] [cursor=pointer]:
+              - /url: javascript:void(0);
+          - listitem [ref=e41]: ">Pesquisar Ofertas"
+        - text: Pesquisar Ofertas
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - generic [ref=e45]:
+            - generic [ref=e47]: "Introduza um termo para pesquisa:"
+            - generic [ref=e48]:
+              - textbox "Introduza um termo para pesquisa" [ref=e50]
+              - button "Pesquisar" [ref=e52] [cursor=pointer]
+            - generic [ref=e54]: "Ex: lisboa gestão segurança social"
+          - button "Pesquisa Avançada ➜" [ref=e56] [cursor=pointer]
+        - generic [ref=e60]:
+          - link " Voltar" [ref=e62] [cursor=pointer]:
+            - /url: javascript:__doPostBack('ctl00$ctl00$FormMasterContentPlaceHolder$ContentPlaceHolder1$ucVoltar','')
+            - generic [ref=e63]: 
+            - text: Voltar
+          - generic [ref=e64]:
+            - link "Imprimir" [ref=e65] [cursor=pointer]:
+              - /url: javascript:window.print()
+            - link " Voltar ao topo" [ref=e66] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e67]: 
+              - text: Voltar ao topo
+  - contentinfo [ref=e69]:
+    - generic [ref=e73]:
+      - link "Logo Governo de Portugal" [ref=e76] [cursor=pointer]:
+        - /url: http://www.portugal.gov.pt/pt.aspx
+        - img "Logo Governo de Portugal" [ref=e77]
+      - generic [ref=e79]:
+        - generic [ref=e80]: Entidade gestora
+        - link "Logo INA" [ref=e81] [cursor=pointer]:
+          - /url: http://www.dgaep.gov.pt/
+          - img "Logo INA" [ref=e82]
+      - generic [ref=e84]:
+        - generic [ref=e85]: Desenvolvimento e apoio técnico
+        - link "Logo ESPAP" [ref=e86] [cursor=pointer]:
+          - /url: http://www.espap.gov.pt/
+          - img "Logo ESPAP" [ref=e87]
+    - generic [ref=e89]:
+      - generic [ref=e90]:
+        - generic [ref=e91]:
+          - generic [ref=e92]: Ofertas
+          - link "Pesquisar Oferta" [ref=e93] [cursor=pointer]:
+            - /url: Oferta_Pesquisa_basica.aspx
+          - link "Pesquisar Resultados" [ref=e94] [cursor=pointer]:
+            - /url: Pesquisa_Resultados.aspx
+          - link "Listar Oferta Dirigentes Superiores" [ref=e95] [cursor=pointer]:
+            - /url: ../CReSAP/CReSAP_Pesquisa.aspx
+          - link "Formulários" [ref=e96] [cursor=pointer]:
+            - /url: javascript:__doPostBack('ctl00$ctl00$lnkbtnformulario','')
+        - generic [ref=e97]:
+          - generic [ref=e98]: Bolsa de Emprego Público
+          - link "Diploma" [ref=e99] [cursor=pointer]:
+            - /url: ../SobreBep/Diploma.aspx
+          - link "Objetivos" [ref=e100] [cursor=pointer]:
+            - /url: ../SobreBep/Objectivos.aspx
+          - link "Funcionalidades" [ref=e101] [cursor=pointer]:
+            - /url: ../SobreBep/Funcionalidades.aspx
+          - link "Acessibilidade" [ref=e102] [cursor=pointer]:
+            - /url: ../Acessibilidade.aspx
+          - link "Entidade Gestora" [ref=e103] [cursor=pointer]:
+            - /url: ../SobreBep/EntidadeGestora.aspx
+        - generic [ref=e104]:
+          - generic [ref=e105]: Links Úteis
+          - link "Oportunidades na UE" [ref=e106] [cursor=pointer]:
+            - /url: javascript:void(0);
+          - link "Eures" [ref=e107] [cursor=pointer]:
+            - /url: https://eures.europa.eu/jobseekers_pt
+          - link "EPSO" [ref=e108] [cursor=pointer]:
+            - /url: https://eu-careers.europa.eu/en/about-epso
+          - link "Carreiras Internacionais" [ref=e109] [cursor=pointer]:
+            - /url: http://www.carreirasinternacionais.eu
+          - link "Instituto Diplomático" [ref=e110] [cursor=pointer]:
+            - /url: https://idi.mne.gov.pt/pt/oportunidades/carreiras-internacionais
+          - link "EUROCID" [ref=e111] [cursor=pointer]:
+            - /url: https://eurocid.mne.gov.pt/empregos
+          - link "Org. Int. do Trabalho" [ref=e112] [cursor=pointer]:
+            - /url: https://www.ilo.org/lisbon/lang--pt/index.htm
+          - link "OCDE" [ref=e113] [cursor=pointer]:
+            - /url: http://www.oecd.org/careers/
+          - link "Netemprego (IEFP)" [ref=e114] [cursor=pointer]:
+            - /url: https://iefponline.iefp.pt/IEFP/pesquisas/search.do?cat=ofertaEmprego
+      - generic [ref=e116]:
+        - generic [ref=e117]: Presidência do Conselho de Ministros
+        - generic [ref=e118]: BEP v5.0.1.5 de 2025-12-03 @ 266

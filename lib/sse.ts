@@ -68,6 +68,7 @@ export function sseResponse(
       "content-type": "text/event-stream",
       "cache-control": "no-cache, no-transform",
       connection: "keep-alive",
+      "x-accel-buffering": "no", // tell proxies (Fly edge) not to buffer the stream
     },
   });
 }

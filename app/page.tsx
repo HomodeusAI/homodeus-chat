@@ -56,6 +56,7 @@ export default function Page() {
   const appRef = useRef<HTMLDivElement>(null);
   const lastSeq = useRef(0);
   const loadedMax = useRef(0);
+  const tailRef = useRef(0);
   const animatedLive = useRef<Set<number>>(new Set());
   const inFlight = useRef(false);
   const loadingOlder = useRef(false);
@@ -112,12 +113,29 @@ export default function Page() {
           setMsgs((prev) => (prev.some((m) => m.seq === ev.message.seq) ? prev : [...prev, ev.message]));
       };
     })();
-    return () => { cancelled = true; es?.close(); };
+    // Safety net: if the SSE connection silently drops (Fly edge timeout), poll for anything missed so
+    // the view always catches up within a few seconds. Cheap (since-cursor) and deduped.
+    const poll = setInterval(async () => {
+      if (cancelled || !tailRef.current) return;
+      try {
+        const r = await fetch(`/api/rooms/${active}/messages?since=${tailRef.current}`);
+        if (!r.ok) return;
+        const fresh = (await r.json()).messages as Msg[];
+        if (fresh.length)
+          setMsgs((prev) => {
+            const seen = new Set(prev.map((m) => m.seq));
+            const add = fresh.filter((m) => !seen.has(m.seq));
+            return add.length ? [...prev, ...add] : prev;
+          });
+      } catch { /* transient */ }
+    }, 8000);
+    return () => { cancelled = true; es?.close(); clearInterval(poll); };
   }, [active]);
 
   useEffect(() => {
     const last = msgs[msgs.length - 1];
     if (!last) return;
+    tailRef.current = last.seq; // poll cursor = highest message shown
     if (last.seq > lastSeq.current) {
       const firstLoad = lastSeq.current === 0; // jump on channel open, glide for a live message
       lastSeq.current = last.seq;
