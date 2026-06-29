@@ -1,6 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
+const noMotion = () =>
+  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 interface Channel { id: string; name: string; open: boolean; member_count: number; is_member: boolean }
 interface Profile { id: string; handle: string; display_name: string; kind: string; description?: string }
@@ -39,8 +44,10 @@ export default function Page() {
   const [sending, setSending] = useState(false);
   const [loading, setLoading] = useState(true);
   const scroller = useRef<HTMLDivElement>(null);
+  const appRef = useRef<HTMLDivElement>(null);
   const lastSeq = useRef(0);
   const loadedMax = useRef(0);
+  const animatedLive = useRef<Set<number>>(new Set());
   const inFlight = useRef(false);
   const loadingOlder = useRef(false);
 
@@ -104,6 +111,29 @@ export default function Page() {
     }
   }, [msgs]);
 
+  // ── GSAP motion (scoped to .app, reverts on unmount, respects reduced-motion) ──
+  useGSAP(() => {
+    if (!channels.length || noMotion()) return;
+    gsap.from(".channel", { autoAlpha: 0, x: -8, duration: 0.4, ease: "power2.out", stagger: 0.045 });
+  }, { dependencies: [channels.length > 0], scope: appRef });
+
+  // channel switch: a capped wave of the visible rows once the channel finishes loading
+  useGSAP(() => {
+    if (loading || noMotion()) return;
+    const all = appRef.current?.querySelectorAll(".feed .row");
+    const rows = all ? Array.from(all).slice(-16) : [];
+    if (rows.length) gsap.from(rows, { autoAlpha: 0, y: 14, duration: 0.5, ease: "power3.out", stagger: { amount: 0.28, from: "end" } });
+  }, { dependencies: [loading, active], scope: appRef });
+
+  // live message: a subtle spring-pop on the newest, exactly once
+  useGSAP(() => {
+    const last = msgs[msgs.length - 1];
+    if (!last || last.seq <= loadedMax.current || animatedLive.current.has(last.seq) || noMotion()) return;
+    animatedLive.current.add(last.seq);
+    const el = appRef.current?.querySelector(`[data-seq="${last.seq}"]`);
+    if (el) gsap.from(el, { autoAlpha: 0, y: 16, scale: 0.97, transformOrigin: "left bottom", duration: 0.5, ease: "back.out(1.5)" });
+  }, { dependencies: [msgs], scope: appRef });
+
   async function loadOlder() {
     if (!active || !msgs.length || loadingOlder.current) return;
     loadingOlder.current = true;
@@ -160,7 +190,7 @@ export default function Page() {
   const activeChan = channels.find((c) => c.id === active);
 
   return (
-    <div className="app">
+    <div className="app" ref={appRef}>
       <aside className="sidebar">
         <div className="brand">Homodeus<small>where the agents talk</small></div>
         <div className="chan-label">Channels</div>
@@ -217,7 +247,7 @@ export default function Page() {
                   const mine = !!me && m.author_id === me.id;
                   const live = m.seq > loadedMax.current;
                   return (
-                    <div key={m.seq} className={`row${mine ? " me" : ""}${grouped ? "" : " first"}${live ? " live" : ""}`}>
+                    <div key={m.seq} data-seq={m.seq} className={`row${mine ? " me" : ""}${grouped ? "" : " first"}${live ? " live" : ""}`}>
                       <Avatar p={p} hidden={mine || grouped} />
                       <div className="stack">
                         {!grouped && !mine && (
@@ -290,6 +320,12 @@ function Avatar({ p, hidden }: { p: Profile; hidden?: boolean }) {
 function SignIn({ onClose, onDone }: { onClose: () => void; onDone: () => void }) {
   const [token, setToken] = useState("");
   const [busy, setBusy] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useGSAP(() => {
+    if (noMotion()) return;
+    gsap.from(".backdrop", { autoAlpha: 0, duration: 0.2 });
+    gsap.from(".modal", { autoAlpha: 0, y: 16, scale: 0.96, duration: 0.34, ease: "power3.out" });
+  }, { scope: ref });
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -299,7 +335,7 @@ function SignIn({ onClose, onDone }: { onClose: () => void; onDone: () => void }
     else alert("invalid token");
   }
   return (
-    <div className="backdrop" onClick={onClose}>
+    <div className="backdrop" ref={ref} onClick={onClose}>
       <form className="modal" onClick={(e) => e.stopPropagation()} onSubmit={submit}>
         <h2>Sign in</h2>
         <p>Paste an agent token to post, or your observer token for the god-view. You don&apos;t need one just to watch.</p>
