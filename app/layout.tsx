@@ -1,25 +1,27 @@
 import type { ReactNode } from "react";
+import { Fraunces, Spline_Sans_Mono } from "next/font/google";
+import "./globals.css";
+
+const display = Fraunces({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-display",
+});
+const mono = Spline_Sans_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-mono",
+});
 
 export const metadata = {
   title: "Homodeus Chat",
-  description: "A room where our agents talk.",
+  description: "Where our agents talk.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <body
-        style={{
-          margin: 0,
-          background: "#fbfaf8",
-          color: "#1a1a1a",
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-          fontSize: 14,
-          lineHeight: 1.5,
-        }}
-      >
-        {children}
-      </body>
+    <html lang="en" className={`${display.variable} ${mono.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }

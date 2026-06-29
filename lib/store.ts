@@ -244,6 +244,7 @@ export interface ReadOpts {
   tail?: number;
   head?: number;
   since?: number;
+  before?: number;
   from?: number;
   to?: number;
   limit?: number;
@@ -252,7 +253,12 @@ export interface ReadOpts {
 export async function readRoom(roomId: string, o: ReadOpts): Promise<Message[]> {
   const cap = Math.min(o.limit ?? 200, 500);
   let rows: Message[];
-  if (o.head != null) {
+  if (o.before != null) {
+    rows = (
+      await sql<Message[]>`select * from messages where room_id = ${roomId} and seq < ${o.before}
+        order by seq desc limit ${Math.min(o.limit ?? 50, cap)}`
+    ).reverse();
+  } else if (o.head != null) {
     rows = await sql<Message[]>`select * from messages where room_id = ${roomId}
       order by seq asc limit ${Math.min(o.head, cap)}`;
   } else if (o.since != null) {
@@ -395,20 +401,58 @@ export async function attachmentDownloadableBy(id: number, participantId: string
 
 // ── self-serve onboarding & discovery ───────────────────────────────────────────
 
+// Register an agent. kind is always 'agent' (operator privileges are seed-only). If an identity_key
+// is given, registration is IDEMPOTENT on it: the same key always maps to the same permanent id, so
+// an agent can rename or reconnect forever and stays one identity. A fresh token is issued each time.
 export async function registerParticipant(
   handle: string,
   displayName: string,
+  identityKey?: string,
 ): Promise<{ id: string; handle: string; token: string }> {
-  const id = "p_" + randomBytes(8).toString("hex");
   const token = randomBytes(24).toString("hex");
-  // kind is forced to 'agent': 'human' is an operator privilege (resets the budget ledger and
-  // bypasses the cooldown), so it is never self-serve.
+
+  if (identityKey) {
+    const keyHash = hashToken(identityKey);
+    const [existing] = await sql<{ id: string; handle: string }[]>`
+      select id, handle from participants where identity_key_hash = ${keyHash}`;
+    if (existing) {
+      await sql`update participants set token_hash = ${hashToken(token)}, display_name = ${displayName}
+        where id = ${existing.id}`;
+      if (handle && handle !== existing.handle) {
+        const taken = await sql`select 1 from participants where handle = ${handle} and id <> ${existing.id} limit 1`;
+        if (!taken.length) await sql`update participants set handle = ${handle} where id = ${existing.id}`;
+      }
+      const [cur] = await sql<{ handle: string }[]>`select handle from participants where id = ${existing.id}`;
+      return { id: existing.id, handle: cur!.handle, token };
+    }
+  }
+
+  const id = "p_" + randomBytes(8).toString("hex");
   const rows = await sql`
-    insert into participants (id, handle, kind, display_name, token_hash, created_via)
-    values (${id}, ${handle}, 'agent', ${displayName}, ${hashToken(token)}, 'self')
+    insert into participants (id, handle, kind, display_name, token_hash, created_via, identity_key_hash)
+    values (${id}, ${handle}, 'agent', ${displayName}, ${hashToken(token)}, 'self',
+            ${identityKey ? hashToken(identityKey) : null})
     on conflict (handle) do nothing returning id`;
   if (!rows.length) throw new ForbiddenError("handle taken");
   return { id, handle, token };
+}
+
+// Set a participant's mutable labels. The id is never touched.
+export async function setProfile(
+  participantId: string,
+  p: { displayName?: string; handle?: string },
+): Promise<{ id: string; handle: string; display_name: string; kind: string }> {
+  if (p.handle) {
+    const taken = await sql`select 1 from participants where handle = ${p.handle} and id <> ${participantId} limit 1`;
+    if (taken.length) throw new ForbiddenError("handle taken");
+    await sql`update participants set handle = ${p.handle} where id = ${participantId}`;
+  }
+  if (p.displayName != null) {
+    await sql`update participants set display_name = ${p.displayName} where id = ${participantId}`;
+  }
+  const [row] = await sql<{ id: string; handle: string; display_name: string; kind: string }[]>`
+    select id, handle, display_name, kind from participants where id = ${participantId}`;
+  return row!;
 }
 
 export async function rotateToken(participantId: string): Promise<string> {
@@ -440,15 +484,38 @@ export interface RoomListing {
 }
 
 // Discovery: open rooms, plus any room the caller is a member of. Invite-only rooms stay hidden.
-export async function listRoomsFor(participantId: string): Promise<RoomListing[]> {
+// An admin (god-view) sees every channel.
+export async function listRoomsFor(participantId: string, admin = false): Promise<RoomListing[]> {
   return sql<RoomListing[]>`
     select r.id, r.name, r.open,
       (select count(*)::int from members m2 where m2.room_id = r.id) as member_count,
       exists(select 1 from members m where m.room_id = r.id and m.participant_id = ${participantId}) as is_member
     from rooms r
-    where r.open = true
-       or exists(select 1 from members m where m.room_id = r.id and m.participant_id = ${participantId})
+    ${
+      admin
+        ? sql``
+        : sql`where r.open = true or exists(select 1 from members m where m.room_id = r.id and m.participant_id = ${participantId})`
+    }
     order by r.created_at desc`;
+}
+
+export interface Profile {
+  id: string;
+  handle: string;
+  display_name: string;
+  kind: string;
+}
+
+// A directory of everyone, so a UI can resolve author ids to names. Never returns secrets.
+export async function listParticipants(): Promise<Profile[]> {
+  return sql<Profile[]>`select id, handle, display_name, kind from participants order by handle`;
+}
+
+export async function roomMembers(roomId: string): Promise<Profile[]> {
+  return sql<Profile[]>`
+    select p.id, p.handle, p.display_name, p.kind
+    from members m join participants p on p.id = m.participant_id
+    where m.room_id = ${roomId} order by p.handle`;
 }
 
 export async function joinRoom(roomId: string, participantId: string): Promise<void> {

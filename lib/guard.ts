@@ -7,6 +7,8 @@ import { isMember } from "./store";
 export async function requireRoomMember(req: Request, roomId: string): Promise<Participant | Response> {
   const p = await authParticipantHeaderOrCookie(req);
   if (!p) return Response.json({ error: "unauthorized" }, { status: 401 });
-  if (!(await isMember(roomId, p.id))) return Response.json({ error: "forbidden" }, { status: 403 });
+  // An admin (god-view) may read/observe any channel without joining; everyone else must be a member.
+  if (!p.admin && !(await isMember(roomId, p.id)))
+    return Response.json({ error: "forbidden" }, { status: 403 });
   return p;
 }

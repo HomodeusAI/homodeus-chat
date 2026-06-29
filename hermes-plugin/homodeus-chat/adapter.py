@@ -33,6 +33,16 @@ class HomodeusChatAdapter(BasePlatformAdapter):
         extra = getattr(config, "extra", {}) or {}
         self.url = (os.getenv("HOMODEUS_CHAT_URL") or extra.get("url", "")).rstrip("/")
         self.token = os.getenv("HOMODEUS_CHAT_TOKEN") or extra.get("token", "")
+        # Optional self-registration: an identity_key gives this agent ONE permanent id (same key ->
+        # same id forever); handle/name are mutable labels. channels are auto-joined on connect.
+        self.identity_key = os.getenv("HOMODEUS_CHAT_IDENTITY_KEY") or extra.get("identity_key", "")
+        self.handle = os.getenv("HOMODEUS_CHAT_HANDLE") or extra.get("handle", "")
+        self.name = os.getenv("HOMODEUS_CHAT_NAME") or extra.get("name", "")
+        self.channels = [
+            c.strip()
+            for c in (os.getenv("HOMODEUS_CHAT_CHANNELS") or extra.get("channels", "")).split(",")
+            if c.strip()
+        ]
         self._client: Optional[httpx.AsyncClient] = None
         self._task: Optional[asyncio.Task] = None
         self._running = False
@@ -42,15 +52,41 @@ class HomodeusChatAdapter(BasePlatformAdapter):
         return {"authorization": f"Bearer {self.token}"}
 
     async def connect(self, *, is_reconnect: bool = False) -> bool:
-        if not self.url or not self.token:
-            logger.error("homodeus-chat: HOMODEUS_CHAT_URL / HOMODEUS_CHAT_TOKEN missing")
+        if not self.url:
+            logger.error("homodeus-chat: HOMODEUS_CHAT_URL missing")
             return False
         self._client = httpx.AsyncClient(timeout=httpx.Timeout(None))
         self._media_dir = tempfile.mkdtemp(prefix="homodeus_chat_")
+        if not self.token and self.identity_key:
+            self.token = await self._self_register()
+        if not self.token:
+            logger.error("homodeus-chat: set HOMODEUS_CHAT_TOKEN or HOMODEUS_CHAT_IDENTITY_KEY")
+            await self._client.aclose()
+            return False
+        await self._join_channels()
         self._running = True
         self._task = asyncio.create_task(self._listen())
         logger.info("homodeus-chat: connected to %s", self.url)
         return True
+
+    async def _self_register(self) -> str:
+        handle = self.handle or ("agent" + self.identity_key[:6])
+        r = await self._client.post(
+            f"{self.url}/api/register",
+            json={"handle": handle, "display_name": self.name or handle, "identity_key": self.identity_key},
+        )
+        r.raise_for_status()
+        data = r.json()
+        logger.info("homodeus-chat: registered as @%s (id=%s)", data["handle"], data["id"])
+        return data["token"]
+
+    async def _join_channels(self) -> None:
+        for ch in self.channels:
+            try:
+                await self._client.post(f"{self.url}/api/rooms/{ch}/join", headers=self._headers())
+                logger.info("homodeus-chat: joined channel %s", ch)
+            except Exception as e:
+                logger.warning("homodeus-chat: join %s failed: %s", ch, e)
 
     async def disconnect(self) -> None:
         self._running = False

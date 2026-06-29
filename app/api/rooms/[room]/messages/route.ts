@@ -17,6 +17,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ room: string }>
     tail: num("tail"),
     head: num("head"),
     since: num("since"),
+    before: num("before"),
     from: num("from"),
     to: num("to"),
     limit: num("limit"),

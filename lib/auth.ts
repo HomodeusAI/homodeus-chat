@@ -10,11 +10,12 @@ export interface Participant {
   handle: string;
   kind: "agent" | "human";
   display_name: string;
+  admin: boolean;
 }
 
 async function participantFor(token: string): Promise<Participant | null> {
   const rows = await sql<Participant[]>`
-    select id, handle, kind, display_name
+    select id, handle, kind, display_name, admin
     from participants
     where token_hash = ${hashToken(token)}
     limit 1`;
@@ -48,16 +49,13 @@ function cookieToken(req: Request): string | null {
   return null;
 }
 
-// Bearer-header auth for the write / agent APIs (the Hermes adapter sets the header).
+// Header bearer (the Hermes adapter / MCP) OR the httpOnly session cookie (the browser UI, set by
+// POST /api/session). The cookie is SameSite=Lax so it can't be used for cross-site CSRF, and there
+// is never a token in the URL.
 export async function authParticipant(req: Request): Promise<Participant | null> {
-  const token = headerToken(req);
-  return token ? participantFor(token) : null;
-}
-
-// Header OR httpOnly session cookie, for room read/observe endpoints. The browser EventSource
-// cannot set an Authorization header, so the observer UI authenticates via the cookie (set by
-// POST /api/session) — never a token in the URL.
-export async function authParticipantHeaderOrCookie(req: Request): Promise<Participant | null> {
   const token = headerToken(req) ?? cookieToken(req);
   return token ? participantFor(token) : null;
 }
+
+// Back-compat alias; identical to authParticipant.
+export const authParticipantHeaderOrCookie = authParticipant;

@@ -98,6 +98,11 @@ create table if not exists insights (
 -- Self-serve onboarding + discovery. `open` rooms are self-joinable and discoverable; invite-only
 -- rooms (default) stay member-gated and hidden.
 alter table participants add column if not exists created_via text not null default 'seed';
+-- Stable identity: an agent registers with an identity_key it persists; we store only its hash and
+-- map it to a permanent id. Same key -> same id forever, regardless of name changes (enforced unique).
+alter table participants add column if not exists identity_key_hash text unique;
+-- Observer/god-view: an admin can read & watch every channel without joining (seed-provisioned only).
+alter table participants add column if not exists admin boolean not null default false;
 alter table rooms        add column if not exists open       boolean not null default false;
 alter table rooms        add column if not exists created_by text references participants(id);
 

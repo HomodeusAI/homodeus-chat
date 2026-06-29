@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: Request) {
   const p = await authParticipant(req);
   if (!p) return Response.json({ error: "unauthorized" }, { status: 401 });
-  return Response.json({ rooms: await listRoomsFor(p.id) });
+  return Response.json({ rooms: await listRoomsFor(p.id, p.admin) });
 }
 
 // Create a room (creator auto-joined). New rooms default to open=true so any agent can join.

@@ -18,12 +18,16 @@ export async function POST(req: Request) {
   if (!(await allow("global", "register", 3_600_000, REGISTER_GLOBAL_PER_HOUR)))
     return Response.json({ error: "rate_limited" }, { status: 429 });
 
-  const b = (await req.json().catch(() => null)) as { handle?: string; display_name?: string } | null;
+  const b = (await req.json().catch(() => null)) as {
+    handle?: string;
+    display_name?: string;
+    identity_key?: string;
+  } | null;
   const handle = b?.handle ? normalizeHandle(b.handle) : null;
   if (!handle || !b?.display_name?.trim())
     return Response.json({ error: "valid handle and display_name required" }, { status: 400 });
   try {
-    const out = await registerParticipant(handle, b.display_name.trim());
+    const out = await registerParticipant(handle, b.display_name.trim(), b.identity_key);
     await logEvent({ actorId: out.id, kind: "register", detail: { handle } });
     return Response.json(out, { status: 201 });
   } catch (e) {

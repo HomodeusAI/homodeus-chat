@@ -6,28 +6,48 @@ const sql = postgres(DB_URL, { max: 1, connection: { search_path: "chat" } });
 const hash = (t: string) => createHash("sha256").update(t).digest("hex");
 const mkToken = () => randomBytes(24).toString("hex");
 
-const room = "ops";
-const participants: { id: string; handle: string; kind: "agent" | "human"; name: string }[] = [
-  { id: "p_crm", handle: "crm", kind: "agent", name: "CRM Agent" },
-  { id: "p_beacon", handle: "beacon", kind: "agent", name: "Beacon" },
-  { id: "p_joao", handle: "joao", kind: "human", name: "Joao" },
+// Default channels (Slack-style). general/random are open (self-joinable + discoverable).
+const channels: { id: string; name: string; open: boolean }[] = [
+  { id: "general", name: "general", open: true },
+  { id: "random", name: "random", open: true },
+  { id: "ops", name: "ops", open: false },
 ];
 
-await sql`insert into rooms (id, name) values (${room}, 'Ops') on conflict (id) do nothing`;
+const participants: {
+  id: string;
+  handle: string;
+  kind: "agent" | "human";
+  name: string;
+  admin: boolean;
+  join: string[];
+}[] = [
+  { id: "p_crm", handle: "crm", kind: "agent", name: "CRM Agent", admin: false, join: ["general", "ops"] },
+  { id: "p_beacon", handle: "beacon", kind: "agent", name: "Beacon", admin: false, join: ["general", "ops"] },
+  { id: "p_joao", handle: "joao", kind: "human", name: "Joao", admin: true, join: [] }, // god-view observer
+];
+
+for (const c of channels) {
+  await sql`insert into rooms (id, name, open) values (${c.id}, ${c.name}, ${c.open})
+    on conflict (id) do update set name = excluded.name, open = excluded.open`;
+}
 
 const tokens: Record<string, string> = {};
 for (const p of participants) {
   const token = mkToken();
   tokens[p.handle] = token;
   await sql`
-    insert into participants (id, handle, kind, display_name, token_hash)
-    values (${p.id}, ${p.handle}, ${p.kind}, ${p.name}, ${hash(token)})
-    on conflict (id) do update set token_hash = excluded.token_hash`;
-  await sql`insert into members (room_id, participant_id) values (${room}, ${p.id})
-            on conflict do nothing`;
+    insert into participants (id, handle, kind, display_name, token_hash, admin)
+    values (${p.id}, ${p.handle}, ${p.kind}, ${p.name}, ${hash(token)}, ${p.admin})
+    on conflict (id) do update set token_hash = excluded.token_hash, admin = excluded.admin`;
+  for (const ch of p.join) {
+    await sql`insert into members (room_id, participant_id) values (${ch}, ${p.id}) on conflict do nothing`;
+  }
 }
 
 await sql.end();
-console.log("seeded room '%s' with %d participants\n", room, participants.length);
-console.log("tokens (store these — only shown now):");
-for (const [handle, token] of Object.entries(tokens)) console.log(`  ${handle.padEnd(8)} ${token}`);
+console.log("seeded channels:", channels.map((c) => c.id).join(", "));
+console.log("\ntokens (store these — only shown now):");
+for (const [handle, token] of Object.entries(tokens)) {
+  const admin = participants.find((p) => p.handle === handle)?.admin ? "  (admin/observer)" : "";
+  console.log(`  ${handle.padEnd(8)} ${token}${admin}`);
+}

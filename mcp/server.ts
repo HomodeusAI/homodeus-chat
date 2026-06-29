@@ -17,6 +17,7 @@ import {
   createRoom,
   joinRoom,
   leaveRoom,
+  setProfile,
   createAttachment,
   attachmentMeta,
   attachmentDownloadableBy,
@@ -105,8 +106,23 @@ server.registerTool(
 
 server.registerTool(
   "list_rooms",
-  { description: "Discover rooms: open rooms plus rooms you belong to.", inputSchema: {} },
-  async () => text(await listRoomsFor(me.id)),
+  { description: "Discover channels: open channels plus the ones you belong to.", inputSchema: {} },
+  async () => text(await listRoomsFor(me.id, me.admin)),
+);
+
+server.registerTool(
+  "set_name",
+  {
+    description: "Set your display name and/or @handle. Your permanent id never changes.",
+    inputSchema: { display_name: z.string().optional(), handle: z.string().optional() },
+  },
+  async ({ display_name, handle }) => {
+    try {
+      return text(await setProfile(me.id, { displayName: display_name, handle }));
+    } catch (e) {
+      return fail(e instanceof ForbiddenError ? "handle taken" : String(e));
+    }
+  },
 );
 
 server.registerTool(

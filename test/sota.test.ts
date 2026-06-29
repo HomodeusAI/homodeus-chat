@@ -1,6 +1,7 @@
 // Keep posts/registers un-throttled for the functional tests; rate limiting is unit-tested directly.
 process.env.CHAT_POST_PER_MIN = "500";
-process.env.CHAT_REGISTER_PER_HOUR = "500";
+process.env.CHAT_REGISTER_PER_HOUR = "100000";
+process.env.CHAT_REGISTER_GLOBAL_PER_HOUR = "100000";
 process.env.CHAT_UPLOAD_PER_MIN = "500";
 process.env.CHAT_JOIN_PER_MIN = "500";
 process.env.CHAT_BLOB_ROOT = "/tmp/homodeus-chat-test-blobs";
@@ -18,6 +19,7 @@ const { POST: postMessage } = await import("@/app/api/messages/route");
 const readRoom = await import("@/app/api/rooms/[room]/messages/route");
 const { POST: uploadFile } = await import("@/app/api/attachments/route");
 const downloadFile = await import("@/app/api/attachments/[id]/route");
+const meRoute = await import("@/app/api/me/route");
 
 async function dbReady(): Promise<boolean> {
   try {
@@ -194,4 +196,31 @@ test("post rejects non-integer parent_seq / attachment_ids", { skip: !hasDb }, a
   const room = await (await rooms.POST(jsonReq("/api/rooms", creator.token, { name: "Open", open: true }))).json();
   assert.equal((await postMessage(jsonReq("/api/messages", creator.token, { room: room.id, body: "x", parent_seq: "nope" }))).status, 400);
   assert.equal((await postMessage(jsonReq("/api/messages", creator.token, { room: room.id, body: "x", attachment_ids: ["a"] }))).status, 400);
+});
+
+test("identity_key: the same key always returns the same permanent id (one identity, new token)", { skip: !hasDb }, async () => {
+  const key = "idk-" + tag;
+  const r1 = await (await register(jsonReq("/api/register", null, { handle: tag + "k", display_name: "K1", identity_key: key }))).json();
+  const r2 = await (await register(jsonReq("/api/register", null, { handle: tag + "k", display_name: "K2", identity_key: key }))).json();
+  assert.equal(r2.id, r1.id, "same identity key -> same id");
+  assert.notEqual(r2.token, r1.token, "a fresh token is issued each registration");
+  await sql`delete from participants where id = ${r1.id}`;
+});
+
+test("POST /api/me renames display + handle, the id is untouched", { skip: !hasDb }, async () => {
+  const before = await (await meRoute.GET(new Request("http://t/api/me", { headers: { authorization: `Bearer ${member.token}` } }))).json();
+  const renamed = await (await meRoute.POST(jsonReq("/api/me", member.token, { display_name: "Renamed", handle: tag + "rn" }))).json();
+  assert.equal(renamed.id, before.id, "rename never changes the id");
+  assert.equal(renamed.display_name, "Renamed");
+  assert.equal(renamed.handle, tag + "rn");
+});
+
+test("admin god-view: an admin reads a channel it never joined", { skip: !hasDb }, async () => {
+  const priv = await (await rooms.POST(jsonReq("/api/rooms", creator.token, { name: "Invite", open: false }))).json();
+  const denied = await readRoom.GET(new Request(`http://t/api/rooms/${priv.id}/messages?tail=1`, { headers: { authorization: `Bearer ${outsider.token}` } }), params(priv.id));
+  assert.equal(denied.status, 403, "a non-member is denied");
+  await sql`update participants set admin = true where id = ${outsider.id}`;
+  const ok = await readRoom.GET(new Request(`http://t/api/rooms/${priv.id}/messages?tail=1`, { headers: { authorization: `Bearer ${outsider.token}` } }), params(priv.id));
+  assert.equal(ok.status, 200, "an admin reads any channel without joining");
+  await sql`update participants set admin = false where id = ${outsider.id}`;
 });
