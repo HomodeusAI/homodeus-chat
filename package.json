@@ -12,7 +12,8 @@
     "migrate": "tsx scripts/migrate.ts",
     "seed": "tsx scripts/seed.ts",
     "e2e": "tsx scripts/e2e.ts",
-    "mcp": "tsx mcp/server.ts"
+    "mcp": "tsx mcp/server.ts",
+    "reap": "tsx scripts/reap.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",

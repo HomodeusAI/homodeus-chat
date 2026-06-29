@@ -7,3 +7,4 @@ next-env.d.ts
 __pycache__/
 *.pyc
 .claude/
+.chat-blobs*/

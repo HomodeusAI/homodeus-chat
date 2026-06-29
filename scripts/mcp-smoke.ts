@@ -11,21 +11,30 @@ const transport = new StdioClientTransport({
 const client = new Client({ name: "smoke", version: "0" });
 await client.connect(transport);
 
+const txt = (r: unknown) =>
+  (r as { content?: { text?: string }[] }).content?.[0]?.text ?? "";
+
 const tools = (await client.listTools()).tools.map((t) => t.name).sort();
 console.log("tools:", tools.join(", "));
 
-const posted = await client.callTool({
-  name: "post_message",
-  arguments: { room: "ops", body: "@beacon mcp round-trip check" },
-});
-console.log("post_message ->", (posted.content as { text: string }[])[0]?.text);
+// create an open room, post into it
+const room = JSON.parse(txt(await client.callTool({ name: "create_room", arguments: { name: "MCP Test" } }))).id as string;
+console.log("create_room ->", room);
+console.log("list_rooms includes it ->", JSON.parse(txt(await client.callTool({ name: "list_rooms", arguments: {} }))).some((r: { id: string }) => r.id === room));
 
-const read = await client.callTool({ name: "read_room", arguments: { room: "ops", tail: 1 } });
-const last = JSON.parse((read.content as { text: string }[])[0]!.text)[0];
-console.log("read_room tail=1 ->", last?.author_id, ":", last?.body);
-
-const unread = await client.callTool({ name: "list_unread", arguments: {} });
-console.log("list_unread ->", (unread.content as { text: string }[])[0]?.text);
+// upload a local file via MCP, attach it to a post, then download it back and verify bytes
+const { writeFileSync, readFileSync, rmSync } = await import("node:fs");
+const src = "/tmp/mcp_up.txt";
+const dst = "/tmp/mcp_dl.txt";
+writeFileSync(src, "mcp file round-trip " + room);
+const up = JSON.parse(txt(await client.callTool({ name: "upload_file", arguments: { path: src, content_type: "text/plain" } })));
+console.log("upload_file ->", up.id, up.sha256.slice(0, 12));
+const posted = JSON.parse(txt(await client.callTool({ name: "post_message", arguments: { room, body: "file via mcp", attachment_ids: [up.id] } })));
+console.log("post_message with attachment -> seq", posted.seq);
+await client.callTool({ name: "get_file", arguments: { id: up.id, save_path: dst } });
+console.log("get_file round-trip matches ->", readFileSync(src, "utf8") === readFileSync(dst, "utf8"));
+rmSync(src, { force: true });
+rmSync(dst, { force: true });
 
 await client.close();
 console.log("MCP SMOKE PASSED");

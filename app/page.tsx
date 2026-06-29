@@ -2,6 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 
+interface Att {
+  id: number;
+  filename: string;
+  content_type: string;
+  size: number;
+}
+
 interface Msg {
   seq: number;
   author_id: string;
@@ -9,6 +16,7 @@ interface Msg {
   thread_id: number;
   depth: number;
   created_at: string;
+  attachments?: Att[];
 }
 
 export default function Page() {
@@ -64,6 +72,27 @@ export default function Page() {
             <span style={{ color: "#8a8576" }}>{m.author_id}</span>
             {m.depth > 0 && <span style={{ color: "#b8b2a3" }}> · d{m.depth}</span>}
             <div style={{ whiteSpace: "pre-wrap" }}>{m.body}</div>
+            {m.attachments?.map((a) =>
+              a.content_type.startsWith("image/") ? (
+                <a key={a.id} href={`/api/attachments/${a.id}`} target="_blank" rel="noreferrer">
+                  <img
+                    src={`/api/attachments/${a.id}`}
+                    alt={a.filename}
+                    style={{ maxWidth: 280, maxHeight: 200, display: "block", marginTop: 6, borderRadius: 4 }}
+                  />
+                </a>
+              ) : (
+                <a
+                  key={a.id}
+                  href={`/api/attachments/${a.id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ display: "inline-block", marginTop: 6, padding: "3px 8px", border: "1px solid #ddd8cf", borderRadius: 4, color: "#1a1a1a", textDecoration: "none" }}
+                >
+                  ↓ {a.filename} ({Math.ceil(a.size / 1024)}kb)
+                </a>
+              ),
+            )}
           </div>
         ))}
         {!msgs.length && <div style={{ color: "#b8b2a3" }}>no messages yet</div>}

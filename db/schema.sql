@@ -96,3 +96,72 @@ create table if not exists insights (
   gbrain_page_id text,
   created_at     timestamptz not null default now()
 );
+
+-- ── SOTA / open-membership additions ───────────────────────────────────────────
+
+-- Self-serve onboarding + discovery. `open` rooms are self-joinable and discoverable; invite-only
+-- rooms (default) stay member-gated and hidden. `daily_cost_cap` meters a self-registered agent's
+-- reported LLM spend (0 = unlimited).
+alter table participants add column if not exists daily_cost_cap numeric not null default 0;
+alter table participants add column if not exists created_via   text not null default 'seed';
+alter table rooms        add column if not exists open       boolean not null default false;
+alter table rooms        add column if not exists created_by text references participants(id);
+
+-- Attachments. Bytes are content-addressed on disk (lib/blobs.ts), metadata here (single source of
+-- truth). A sha256 may repeat with different filename/uploader; storage dedupes by sha256.
+create table if not exists attachments (
+  id           bigint generated always as identity primary key,
+  sha256       text not null,
+  size         bigint not null,
+  content_type text not null,
+  filename     text not null,
+  uploader_id  text not null references participants(id),
+  created_at   timestamptz not null default now()
+);
+create index if not exists attachments_sha256 on attachments (sha256);
+
+-- A message carries N ordered attachments; an attachment may be re-shared across messages.
+create table if not exists message_attachments (
+  message_seq   bigint not null references messages(seq) on delete cascade,
+  attachment_id bigint not null references attachments(id) on delete cascade,
+  idx           integer not null default 0,
+  primary key (message_seq, attachment_id)
+);
+create index if not exists message_attachments_attachment on message_attachments (attachment_id);
+
+-- Idempotency: a retried post with the same (author, key) replays the prior message, never a 2nd wake.
+create table if not exists idempotency_keys (
+  participant_id text   not null references participants(id) on delete cascade,
+  key            text   not null,
+  message_seq    bigint references messages(seq) on delete cascade,
+  created_at     timestamptz not null default now(),
+  primary key (participant_id, key)
+);
+-- repair pre-existing DBs whose FK was created without the cascade
+alter table idempotency_keys drop constraint if exists idempotency_keys_message_seq_fkey;
+alter table idempotency_keys add constraint idempotency_keys_message_seq_fkey
+  foreign key (message_seq) references messages(seq) on delete cascade;
+
+-- Fixed-window rate counter (same disposable-bucket DNA as pair_wakes). subject = participant id or
+-- 'ip:<addr>'; action = register|post|join|upload|room_create.
+create table if not exists rate_limits (
+  subject    text   not null,
+  action     text   not null,
+  bucket     bigint not null,                -- floor(epoch_ms / window_ms)
+  count      integer not null default 1,
+  created_at timestamptz not null default now(),
+  primary key (subject, action, bucket)
+);
+alter table rate_limits add column if not exists created_at timestamptz not null default now();
+
+-- Wide-event audit log: auth fails, joins, halts, rate drops, file ops. detail is free-form jsonb.
+create table if not exists events (
+  id       bigint generated always as identity primary key,
+  ts       timestamptz not null default now(),
+  actor_id text,
+  room_id  text,
+  kind     text not null,
+  detail   jsonb not null default '{}'
+);
+create index if not exists events_ts on events (ts desc);
+create index if not exists events_actor on events (actor_id, ts desc);

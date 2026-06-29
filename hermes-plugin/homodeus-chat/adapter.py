@@ -9,9 +9,14 @@ import asyncio
 import json
 import logging
 import os
-from typing import Any, Dict, Optional
+import shutil
+import tempfile
+from typing import Any, Dict, List, Optional
 
 import httpx
+
+MAX_INBOUND_FILE_BYTES = 50 * 1024 * 1024  # skip downloading attachments larger than this
+DOWNLOAD_TIMEOUT_S = 30.0
 
 from gateway.platforms.base import BasePlatformAdapter, MessageEvent, MessageType, SendResult
 from gateway.session import SessionSource
@@ -31,6 +36,7 @@ class HomodeusChatAdapter(BasePlatformAdapter):
         self._client: Optional[httpx.AsyncClient] = None
         self._task: Optional[asyncio.Task] = None
         self._running = False
+        self._media_dir: Optional[str] = None
 
     def _headers(self) -> Dict[str, str]:
         return {"authorization": f"Bearer {self.token}"}
@@ -40,6 +46,7 @@ class HomodeusChatAdapter(BasePlatformAdapter):
             logger.error("homodeus-chat: HOMODEUS_CHAT_URL / HOMODEUS_CHAT_TOKEN missing")
             return False
         self._client = httpx.AsyncClient(timeout=httpx.Timeout(None))
+        self._media_dir = tempfile.mkdtemp(prefix="homodeus_chat_")
         self._running = True
         self._task = asyncio.create_task(self._listen())
         logger.info("homodeus-chat: connected to %s", self.url)
@@ -55,6 +62,9 @@ class HomodeusChatAdapter(BasePlatformAdapter):
                 pass
         if self._client:
             await self._client.aclose()
+        if self._media_dir:
+            shutil.rmtree(self._media_dir, ignore_errors=True)  # drop downloaded inbound files
+            self._media_dir = None
         logger.info("homodeus-chat: disconnected")
 
     async def _listen(self) -> None:
@@ -92,11 +102,24 @@ class HomodeusChatAdapter(BasePlatformAdapter):
             user_name=str(m["author_id"]),
             message_id=str(seq),
         )
+        # Download any inbound attachments to local paths so the agent can read them (vision /
+        # file tools). Images flip the message to PHOTO so the gateway routes them to vision.
+        media_urls: List[str] = []
+        media_types: List[str] = []
+        for att in m.get("attachments") or []:
+            path = await self._download_attachment(att)
+            if path:
+                media_urls.append(path)
+                media_types.append(str(att.get("content_type", "")))
+        is_image = any(t.startswith("image/") for t in media_types)
+
         event = MessageEvent(
             text=m["body"],
-            message_type=MessageType.TEXT,
+            message_type=MessageType.PHOTO if is_image else MessageType.TEXT,
             source=source,
             message_id=str(seq),
+            media_urls=media_urls,
+            media_types=media_types,
         )
         await self.handle_message(event)
         try:  # ack after the gateway has durably taken it; un-acked wakes replay on reconnect
@@ -105,6 +128,26 @@ class HomodeusChatAdapter(BasePlatformAdapter):
             )
         except Exception as e:
             logger.warning("homodeus-chat: ack failed for seq=%s: %s", seq, e)
+
+    async def _download_attachment(self, att: Dict[str, Any]) -> Optional[str]:
+        if int(att.get("size", 0)) > MAX_INBOUND_FILE_BYTES:
+            logger.warning("homodeus-chat: skipping oversized attachment %s", att.get("id"))
+            return None
+        try:
+            r = await self._client.get(
+                f"{self.url}/api/attachments/{att['id']}",
+                headers=self._headers(),
+                timeout=httpx.Timeout(DOWNLOAD_TIMEOUT_S),  # don't block the wake loop forever
+            )
+            r.raise_for_status()
+            name = str(att.get("filename") or "file").replace("/", "_")
+            path = os.path.join(self._media_dir or tempfile.gettempdir(), f"{att['id']}_{name}")
+            with open(path, "wb") as f:
+                f.write(r.content)
+            return path
+        except Exception as e:
+            logger.warning("homodeus-chat: attachment %s download failed: %s", att.get("id"), e)
+            return None
 
     async def send(
         self,
@@ -149,6 +192,11 @@ def register(ctx):
         check_fn=check_requirements,
         required_env=["HOMODEUS_CHAT_URL", "HOMODEUS_CHAT_TOKEN"],
         install_hint="pip install httpx",
+        # The chat backend already enforces room membership, so the Hermes-side user allowlist is
+        # redundant. Set HOMODEUS_CHAT_ALLOW_ALL=true to accept any room participant as an author
+        # (the right default for an AI-to-AI room), or pin a list via HOMODEUS_CHAT_ALLOWED_USERS.
+        allow_all_env="HOMODEUS_CHAT_ALLOW_ALL",
+        allowed_users_env="HOMODEUS_CHAT_ALLOWED_USERS",
         max_message_length=8000,
         emoji="💬",
         platform_hint=(
