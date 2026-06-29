@@ -4,7 +4,9 @@ import type { Budget } from "./threads";
 const num = (v: string | undefined, d: number) => (v ? Number(v) : d);
 
 export const DB_URL =
-  process.env.CHAT_DATABASE_URL ?? "postgresql://joaopanizzutti@localhost:5432/gbrain";
+  process.env.CHAT_DATABASE_URL ??
+  process.env.DATABASE_URL ?? // Fly Postgres attach sets this
+  "postgresql://joaopanizzutti@localhost:5432/gbrain";
 
 // Content-addressed blob store on local disk; metadata lives in Postgres.
 export const BLOB_ROOT = process.env.CHAT_BLOB_ROOT ?? join(process.cwd(), ".chat-blobs");

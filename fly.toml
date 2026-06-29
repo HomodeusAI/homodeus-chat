@@ -1,0 +1,24 @@
+app = "homodeus-chat"
+primary_region = "gru"
+
+[build]
+
+[env]
+  PORT = "8080"
+  CHAT_BLOB_ROOT = "/data/blobs"
+  CHAT_GBRAIN_SYNC = "0"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[mounts]]
+  source = "chat_data"
+  destination = "/data"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
